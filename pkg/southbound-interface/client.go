@@ -2,12 +2,9 @@ package southboundinterface
 
 import (
 	"context"
-	"fmt"
-	"time"
 
 	"main-service/pkg/logger"
 
-	"github.com/openconfig/gnmi/client"
 	gclient "github.com/openconfig/gnmi/client/gnmi"
 	"github.com/openconfig/gnmi/proto/gnmi"
 )
@@ -24,7 +21,7 @@ func SendRequestToStorage(data []byte) {
 
 	defer c.Close()
 
-	request := createRequest(data)
+	request := createSetRequest(data)
 
 	var response *gnmi.SetResponse
 	response, err = c.(*gclient.Client).Set(ctx, request)
@@ -50,47 +47,34 @@ func SendRequestToStorage(data []byte) {
 	}
 }
 
-func createRequest(data []byte) *gnmi.SetRequest {
-	request := &gnmi.SetRequest{
-		Update: []*gnmi.Update{
-			{
-				Path: &gnmi.Path{
-					Elem: []*gnmi.PathElem{
-						{
-							Name: "Action",
-							Key: map[string]string{
-								"Action": "StoreGetReq",
-							},
-						},
-					},
-				},
-				Val: &gnmi.TypedValue{
-					Value: &gnmi.TypedValue_JsonVal{
-						JsonVal: data,
-					},
-				},
-			},
-		},
-	}
+func GetConfigFromStorage() []byte {
+	ctx := context.Background()
 
-	return request
-}
-
-func createGnmiClient(addr string, ctx context.Context) (client.Impl, error) {
-	// Use secure communication (port 10161)
-	c, err := gclient.New(ctx, client.Destination{
-		Addrs:       []string{fmt.Sprintf("%s:11161", addr)},
-		Target:      addr,
-		Timeout:     time.Second * 5,
-		Credentials: nil,
-		TLS:         nil,
-	})
-
+	c, err := createGnmiClient("storage-service", ctx)
 	if err != nil {
-		log.Errorf("Could not create a gNMI client: %+v", err)
-
-		return nil, err
+		return nil
 	}
 
-	return c, nil
+	defer c.Close()
+
+	request := createGetRequest()
+
+	var response *gnmi.GetResponse
+	response, err = c.(*gclient.Client).Get(ctx, request)
+	if err != nil {
+		log.Errorf("Set request failed: %v", err)
+		return nil
+	}
+
+	if len(response.Notification) > 1 {
+		log.Error("More than one update from storage-service")
+	}
+
+	var data []byte
+
+	for _, notification := range response.Notification {
+		data = notification.Update[0].Val.GetJsonVal()
+	}
+
+	return data
 }

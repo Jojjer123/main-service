@@ -92,8 +92,13 @@ func getConfig(writer http.ResponseWriter, req *http.Request) {
 		panic(err)
 	}
 
-	// TODO: call southbound interface to store request in storage
+	// Call southbound to store the "request"
 	southbound.SendRequestToStorage(data)
+
+	// Call the southbound to get a "response"
+	if data = southbound.GetConfigFromStorage(); data == nil {
+		return
+	}
 
 	//Write configRequest back to client
 	fmt.Fprintf(writer, "request: %+v", configRequest)
