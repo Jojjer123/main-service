@@ -9,11 +9,11 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/go-openapi/runtime/middleware/header"
-	"github.com/main-service/pkg/logger"
+	"main-service/pkg/logger"
+	southbound "main-service/pkg/southbound-interface"
+	"main-service/pkg/structures"
 
-	// southbound "github.com/main-service/pkg/southbound-interface"
-	"github.com/main-service/pkg/structures"
+	"github.com/go-openapi/runtime/middleware/header"
 )
 
 const PORT uint16 = 8080
@@ -93,7 +93,7 @@ func getConfig(writer http.ResponseWriter, req *http.Request) {
 	}
 
 	// TODO: call southbound interface to store request in storage
-	// southbound.SendRequestToStorage(data)
+	southbound.SendRequestToStorage(data)
 
 	//Write configRequest back to client
 	fmt.Fprintf(writer, "request: %+v", configRequest)

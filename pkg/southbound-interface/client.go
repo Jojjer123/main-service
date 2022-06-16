@@ -2,9 +2,11 @@ package southboundinterface
 
 import (
 	"context"
+	"fmt"
 	"time"
 
-	"github.com/main-service/pkg/logger"
+	"main-service/pkg/logger"
+
 	"github.com/openconfig/gnmi/client"
 	gclient "github.com/openconfig/gnmi/client/gnmi"
 	"github.com/openconfig/gnmi/proto/gnmi"
@@ -19,6 +21,8 @@ func SendRequestToStorage(data []byte) {
 	if err != nil {
 		return
 	}
+
+	defer c.Close()
 
 	request := createRequest(data)
 
@@ -75,7 +79,7 @@ func createRequest(data []byte) *gnmi.SetRequest {
 func createGnmiClient(addr string, ctx context.Context) (client.Impl, error) {
 	// Use secure communication (port 10161)
 	c, err := gclient.New(ctx, client.Destination{
-		Addrs:       []string{addr + ":11161"},
+		Addrs:       []string{fmt.Sprintf("%s:11161", addr)},
 		Target:      addr,
 		Timeout:     time.Second * 5,
 		Credentials: nil,

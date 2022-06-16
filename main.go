@@ -1,7 +1,7 @@
 package main
 
 import (
-	northboundinterface "github.com/main-service/pkg/northbound-interface"
+	northboundinterface "main-service/pkg/northbound-interface"
 )
 
 func main() {

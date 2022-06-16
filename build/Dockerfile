@@ -1,6 +1,6 @@
-FROM golang:1.17 as build
+FROM golang:1.18 as build
 
-ENV MAIN_ROOT=/go/src/github.com/main-service
+ENV MAIN_ROOT=/go/src/main-service
 ENV CGO_ENABLED=0
 
 RUN mkdir -p $MAIN_ROOT/
