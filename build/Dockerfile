@@ -1,4 +1,4 @@
-FROM golang:1.18 as build
+FROM golang:1.16 as build
 
 ENV MAIN_ROOT=/go/src/github.com/main-service
 ENV CGO_ENABLED=0
@@ -17,5 +17,7 @@ RUN mkdir $HOME
 WORKDIR $HOME
 
 COPY --from=build /go/bin/main /usr/local/bin/
+
+EXPOSE 8080
 
 CMD ["main"]
