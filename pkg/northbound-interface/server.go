@@ -11,7 +11,8 @@ import (
 
 	"github.com/go-openapi/runtime/middleware/header"
 	"github.com/main-service/pkg/logger"
-	southbound "github.com/main-service/pkg/southbound-interface"
+
+	// southbound "github.com/main-service/pkg/southbound-interface"
 	"github.com/main-service/pkg/structures"
 )
 
@@ -92,7 +93,7 @@ func getConfig(writer http.ResponseWriter, req *http.Request) {
 	}
 
 	// TODO: call southbound interface to store request in storage
-	southbound.SendRequestToStorage(data)
+	// southbound.SendRequestToStorage(data)
 
 	//Write configRequest back to client
 	fmt.Fprintf(writer, "request: %+v", configRequest)

@@ -6,9 +6,8 @@ import (
 
 	"github.com/main-service/pkg/logger"
 	"github.com/openconfig/gnmi/client"
-	"github.com/openconfig/gnmi/proto/gnmi"
-
 	gclient "github.com/openconfig/gnmi/client/gnmi"
+	"github.com/openconfig/gnmi/proto/gnmi"
 )
 
 var log = logger.GetLogger()
