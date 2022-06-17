@@ -11,7 +11,7 @@ import (
 
 var log = logger.GetLogger()
 
-func SendRequestToStorage(data []byte) {
+func StoreRequestInStorage(data []byte) {
 	ctx := context.Background()
 
 	c, err := createGnmiClient("storage-service", ctx)

@@ -93,15 +93,16 @@ func getConfig(writer http.ResponseWriter, req *http.Request) {
 	}
 
 	// Call southbound to store the "request"
-	southbound.SendRequestToStorage(data)
+	southbound.StoreRequestInStorage(data)
 
 	// Call the southbound to get a "response"
 	if data = southbound.GetConfigFromStorage(); data == nil {
+		log.Error("Received no data from storage")
 		return
 	}
 
 	//Write configRequest back to client
-	fmt.Fprintf(writer, "request: %+v", configRequest)
+	// fmt.Fprintf(writer, "request: %+v", configRequest)
 
 	writer.Header().Add("Content-Type", "application/json; charset=utf-8")
 	writer.Write(data)
