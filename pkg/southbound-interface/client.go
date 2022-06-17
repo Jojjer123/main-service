@@ -73,6 +73,7 @@ func GetConfigFromStorage() []byte {
 	var data []byte
 
 	for _, notification := range response.Notification {
+		log.Info("Received main conf from storage!")
 		data = notification.Update[0].Val.GetJsonVal()
 	}
 

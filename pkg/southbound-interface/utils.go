@@ -10,6 +10,8 @@ import (
 	"github.com/openconfig/gnmi/proto/gnmi"
 )
 
+const GetRequest_MainConf gnmi.GetRequest_DataType = 7
+
 func createSetRequest(data []byte) *gnmi.SetRequest {
 	request := &gnmi.SetRequest{
 		Update: []*gnmi.Update{
@@ -50,6 +52,7 @@ func createGetRequest() *gnmi.GetRequest {
 				},
 			},
 		},
+		Type: GetRequest_MainConf,
 	}
 
 	return request
