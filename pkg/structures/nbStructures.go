@@ -38,7 +38,7 @@ type ListenerGroup struct {
 	// StrId streamId
 	Index                uint16                    `json:"index"`
 	StrId                StreamId                  `json:"stream-id"`
-	EndStationInterfaces []InterfaceId             `json:"end-station-interfaces"`
+	EndStationInterfaces []Interface               `json:"end-station-interfaces"`
 	UserToNetReq         UserToNetworkRequirements `json:"user-to-network-requirements"`
 	InterfCap            InterfaceCapabilities     `json:"interface-capabilities"`
 }
