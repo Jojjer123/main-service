@@ -25,9 +25,13 @@ type StreamId struct {
 type InterfaceId struct {
 	// MacAddress    net.HardwareAddr
 	// InterfaceName string
-	Index         int    `json:"index"`
 	MacAddress    string `json:"mac-address"`
 	InterfaceName string `json:"interface-name"`
+}
+
+type Interface struct {
+	Index       int         `json:"index"`
+	InterfaceId InterfaceId `json:"interface-id"`
 }
 
 type ListenerGroup struct {
@@ -113,7 +117,7 @@ type TrafficSpecification struct {
 type TalkerGroup struct {
 	StrId                  StreamId                  `json:"stream-id"`
 	StrRank                StreamRank                `json:"stream-rank"`
-	EndStationInterfaces   []InterfaceId             `json:"end-station-interfaces"`
+	EndStationInterfaces   []Interface               `json:"end-station-interfaces"`
 	DataFrameSpecification []DataFrameSpecification  `json:"data-frame-specification"`
 	TrafficSpecification   TrafficSpecification      `json:"traffic-specification"`
 	UserToNetReq           UserToNetworkRequirements `json:"user-to-network-requirements"`
@@ -175,7 +179,7 @@ type StatusGroup struct {
 	StatusInfo           StatusInfo
 	FailedInterfaces     *[]InterfaceId
 	StatusTalkerListener []TalkerListenerStatus
-	EndStationInterfaces *[]InterfaceId
+	EndStationInterfaces *[]Interface
 }
 
 type Response struct {
