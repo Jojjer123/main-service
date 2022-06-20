@@ -18,13 +18,14 @@ type InterfaceCapabilities struct {
 type StreamId struct {
 	// MacAddress net.HardwareAddr
 	// UniqueId   uint16
-	MacAddress string `json:"MacAddress"`
-	UniqueId   string `json:"UniqueId"`
+	MacAddress string `json:"mac-address"`
+	UniqueId   string `json:"unique-id"`
 }
 
 type InterfaceId struct {
 	// MacAddress    net.HardwareAddr
 	// InterfaceName string
+	Index         int    `json:"index"`
 	MacAddress    string `json:"mac-address"`
 	InterfaceName string `json:"interface-name"`
 }

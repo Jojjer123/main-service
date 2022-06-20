@@ -4,14 +4,15 @@
 		{
 			"talker": {
 				"stream-id": {
-					"MacAddress": "00-00-00-00-00-01",
-					"UniqueId": "00-01"
+					"mac-address": "00-00-00-00-00-01",
+					"unique-id": "00-01"
 				},
 				"stream-rank": {
 					"rank": 1
 				},
 				"end-station-interfaces": [
 					{
+						"index": 0,
 						"mac-address": "00-00-00-00-00-01",
 						"interface-name": ""
 					}
@@ -58,11 +59,12 @@
 				{
 					"index": 0,
 					"stream-id": {
-						"MacAddress": "00-00-00-00-00-01",
-						"UniqueId": "00-01"
+						"mac-address": "00-00-00-00-00-01",
+						"unique-id": "00-01"
 					},
 					"end-station-interfaces": [
 						{
+							"index": 0,
 							"mac-address": "00-00-00-0F-00-00",
 							"interface-name": ""
 						}
@@ -80,14 +82,15 @@
 		{
 			"talker": {
 				"stream-id": {
-					"MacAddress": "00-00-00-00-00-02",
-					"UniqueId": "00-01"
+					"mac-address": "00-00-00-00-00-02",
+					"unique-id": "00-01"
 				},
 				"stream-rank": {
 					"rank": 1
 				},
 				"end-station-interfaces": [
 					{
+						"index": 1,
 						"mac-address": "00-00-00-00-00-02",
 						"interface-name": ""
 					}
@@ -134,11 +137,12 @@
 				{
 					"index": 0,
 					"stream-id": {
-						"MacAddress": "00-00-00-00-00-02",
-						"UniqueId": "00-01"
+						"mac-address": "00-00-00-00-00-02",
+						"unique-id": "00-01"
 					},
 					"end-station-interfaces": [
 						{
+							"index": 1,
 							"mac-address": "00-00-00-0F-00-00",
 							"interface-name": ""
 						}
@@ -156,14 +160,15 @@
 		{
 			"talker": {
 				"stream-id": {
-					"MacAddress": "00-00-00-00-0A-00",
-					"UniqueId": "00-01"
+					"mac-address": "00-00-00-00-0A-00",
+					"unique-id": "00-01"
 				},
 				"stream-rank": {
 					"rank": 1
 				},
 				"end-station-interfaces": [
 					{
+						"index": 2,
 						"mac-address": "00-00-00-00-0A-00",
 						"interface-name": ""
 					}
@@ -210,11 +215,12 @@
 				{
 					"index": 0,
 					"stream-id": {
-						"MacAddress": "00-00-00-00-0A-00",
-						"UniqueId": "00-01"
+						"mac-address": "00-00-00-00-0A-00",
+						"unique-id": "00-01"
 					},
 					"end-station-interfaces": [
 						{
+							"index": 2,
 							"mac-address": "00-00-00-0F-00-00",
 							"interface-name": ""
 						}
@@ -232,14 +238,15 @@
 		{
 			"talker": {
 				"stream-id": {
-					"MacAddress": "00-00-00-0F-00-00",
-					"UniqueId": "00-01"
+					"mac-address": "00-00-00-0F-00-00",
+					"unique-id": "00-01"
 				},
 				"stream-rank": {
 					"rank": 1
 				},
 				"end-station-interfaces": [
 					{
+						"index": 3,
 						"mac-address": "00-00-00-0F-00-00",
 						"interface-name": ""
 					}
@@ -286,11 +293,12 @@
 				{
 					"index": 0,
 					"stream-id": {
-						"MacAddress": "00-00-00-0F-00-00",
-						"UniqueId": "00-01"
+						"mac-address": "00-00-00-0F-00-00",
+						"unique-id": "00-01"
 					},
 					"end-station-interfaces": [
 						{
+							"index": 3,
 							"mac-address": "00-00-00-00-0A-00",
 							"interface-name": ""
 						}
@@ -308,14 +316,15 @@
 		{
 			"talker": {
 				"stream-id": {
-					"MacAddress": "00-00-00-0F-00-00",
-					"UniqueId": "00-02"
+					"mac-address": "00-00-00-0F-00-00",
+					"unique-id": "00-02"
 				},
 				"stream-rank": {
 					"rank": 1
 				},
 				"end-station-interfaces": [
 					{
+						"index": 4,
 						"mac-address": "00-00-00-0F-00-00",
 						"interface-name": ""
 					}
@@ -362,11 +371,12 @@
 				{
 					"index": 0,
 					"stream-id": {
-						"MacAddress": "00-00-00-0F-00-00",
-						"UniqueId": "00-02"
+						"mac-address": "00-00-00-0F-00-00",
+						"unique-id": "00-02"
 					},
 					"end-station-interfaces": [
 						{
+							"index": 4,
 							"mac-address": "00-00-0D-00-00-00",
 							"interface-name": ""
 						}
