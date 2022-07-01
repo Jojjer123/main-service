@@ -1,81 +1,120 @@
 package southboundinterface
 
 import (
-	"context"
+	// "context"
 
 	"main-service/pkg/logger"
+	store "main-service/pkg/store-wrapper"
+	"main-service/pkg/structures"
 
-	gclient "github.com/openconfig/gnmi/client/gnmi"
-	"github.com/openconfig/gnmi/proto/gnmi"
+	"github.com/gogo/protobuf/proto"
+	// gclient "github.com/openconfig/gnmi/client/gnmi"
+	// "github.com/openconfig/gnmi/proto/gnmi"
 )
 
 var log = logger.GetLogger()
 
-func StoreRequestInStorage(data []byte) {
-	ctx := context.Background()
+func StoreRequestInStorage(configRequest *structures.ConfigRequest) {
+	// data, err := proto.Marshal(configRequest)
+	// if err != nil {
+	// 	log.Errorf("Failed marshaling: %v", err)
+	// 	return
+	// }
 
-	c, err := createGnmiClient("storage-service", ctx)
-	if err != nil {
-		return
-	}
+	// err = store.Set("configurations.testing", data)
+	// if err != nil {
+	// 	log.Errorf("Error storing configuration request: %v", err)
+	// 	return
+	// }
 
-	defer c.Close()
+	// log.Info("Stored configuration request!")
 
-	request := createSetRequest(data)
+	// ctx := context.Background()
 
-	var response *gnmi.SetResponse
-	response, err = c.(*gclient.Client).Set(ctx, request)
-	if err != nil {
-		log.Errorf("Set request failed: %v", err)
-		return
-	}
+	// c, err := createGnmiClient("storage-service", ctx)
+	// if err != nil {
+	// 	return
+	// }
 
-	if len(response.Response) > 1 {
-		log.Error("More than one result from storage-service")
-	}
+	// defer c.Close()
 
-	for _, result := range response.Response {
-		if result.Path.Elem[0].Name != "ActionResult" {
-			log.Error("Missing action result from storage-service")
-		} else {
-			if result.Path.Elem[0].Key["ActionResult"] == "Failed" {
-				log.Error("Storing request failed!")
-			} else {
-				log.Infof("Stored request successfully!")
-			}
-		}
-	}
+	// request := createSetRequest(data)
+
+	// var response *gnmi.SetResponse
+	// response, err = c.(*gclient.Client).Set(ctx, request)
+	// if err != nil {
+	// 	log.Errorf("Set request failed: %v", err)
+	// 	return
+	// }
+
+	// if len(response.Response) > 1 {
+	// 	log.Error("More than one result from storage-service")
+	// }
+
+	// for _, result := range response.Response {
+	// 	if result.Path.Elem[0].Name != "ActionResult" {
+	// 		log.Error("Missing action result from storage-service")
+	// 	} else {
+	// 		if result.Path.Elem[0].Key["ActionResult"] == "Failed" {
+	// 			log.Error("Storing request failed!")
+	// 		} else {
+	// 			log.Infof("Stored request successfully!")
+	// 		}
+	// 	}
+	// }
 }
 
 func GetConfigFromStorage() []byte {
-	ctx := context.Background()
-
-	c, err := createGnmiClient("storage-service", ctx)
+	resource, err := store.Get("configurations.testing")
 	if err != nil {
+		log.Errorf("Error storing configuration request: %v", err)
 		return nil
 	}
 
-	defer c.Close()
-
-	request := createGetRequest()
-
-	var response *gnmi.GetResponse
-	response, err = c.(*gclient.Client).Get(ctx, request)
-	if err != nil {
-		log.Errorf("Set request failed: %v", err)
+	test, ok := resource.(structures.ConfigRequest)
+	if !ok {
+		log.Errorf("Failed type assertion on: %v", test)
 		return nil
 	}
 
-	if len(response.Notification) > 1 {
-		log.Error("More than one update from storage-service")
+	config, err := proto.Marshal(&test)
+	if err != nil {
+		log.Errorf("Failed marshaling config: %v", err)
+		return nil
 	}
 
-	var data []byte
+	return config
 
-	for _, notification := range response.Notification {
-		log.Info("Received main conf from storage!")
-		data = notification.Update[0].Val.GetJsonVal()
-	}
+	// log.Info("Stored configuration request!")
 
-	return data
+	// ctx := context.Background()
+
+	// c, err := createGnmiClient("storage-service", ctx)
+	// if err != nil {
+	// 	return nil
+	// }
+
+	// defer c.Close()
+
+	// request := createGetRequest()
+
+	// var response *gnmi.GetResponse
+	// response, err = c.(*gclient.Client).Get(ctx, request)
+	// if err != nil {
+	// 	log.Errorf("Set request failed: %v", err)
+	// 	return nil
+	// }
+
+	// if len(response.Notification) > 1 {
+	// 	log.Error("More than one update from storage-service")
+	// }
+
+	// var data []byte
+
+	// for _, notification := range response.Notification {
+	// 	log.Info("Received main conf from storage!")
+	// 	data = notification.Update[0].Val.GetJsonVal()
+	// }
+
+	// return data
 }
