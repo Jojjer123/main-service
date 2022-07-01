@@ -1,19 +1,22 @@
 package eventhandler
 
 import (
+	"context"
 	"fmt"
 	"main-service/pkg/logger"
 	store "main-service/pkg/store-wrapper"
 	"main-service/pkg/structures"
+	"main-service/pkg/structures/grpc/notification"
 
 	"github.com/google/uuid"
+	"google.golang.org/grpc"
+	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 var log = logger.GetLogger()
 
-// TODO: Change response structure to instead be protobuf, it is currently normal structure.
+// TODO: Change response structure to instead be protobuf, it is currently normal structure
 func HandleEvent(event *structures.ConfigRequest) (*structures.Response, error) {
-
 	// Store requests in storage and log the events
 	if err := storeRequestsInStore(event.Requests); err != nil {
 		log.Errorf("Failed storing and logging events: %v", err)
@@ -22,13 +25,13 @@ func HandleEvent(event *structures.ConfigRequest) (*structures.Response, error) 
 
 	log.Info("Configuration requests stored successfully!")
 
-	// TODO: Notify TSN service
+	// Notify TSN service that it should calculate a new configuration
 	if err := notifyTsnService(); err != nil {
 		log.Errorf("Failed to notify TSN service: %v", err)
 		return nil, err
 	}
 
-	// TODO: Wait for response from TSN service
+	log.Info("Configuration calculated!")
 
 	// TODO: Finalize configuration
 
@@ -37,10 +40,29 @@ func HandleEvent(event *structures.ConfigRequest) (*structures.Response, error) 
 	return nil, nil
 }
 
-// Notifies the TSN service through gRPC that ...
+// Notifies the TSN service through gRPC that it should start calculating
+// a new configuration.
 func notifyTsnService() error {
 	// TODO: Create gRPC client and connect to TSN service
 	// (consider having a constant connection to TSN service)
+
+	conn, err := grpc.Dial("tsn-service:5000", grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("Failed dialing tsn-service: %v", err)
+		return err
+	}
+
+	defer conn.Close()
+
+	client := notification.NewNotificationClient(conn)
+
+	// Will have to be changed, CalcConfig should return something so that
+	// we know what configuration it just calculated.
+	_, err = client.CalcConfig(context.Background(), &emptypb.Empty{})
+	if err != nil {
+		log.Fatalf("Calculating configuration failed: %v", err)
+		return err
+	}
 
 	return nil
 }
