@@ -1,5 +1,7 @@
 syntax = "proto3";
-package structures;
+package configuration;
+
+option go_package = "/configuration";
 
 /////////////////////////////////////////////////
 /*                CONFIG REQUEST               */
@@ -25,7 +27,7 @@ message InterfaceId {
 }
 
 message Interface {
-	int64 Index = 1 [json_name="index"];
+	int32 Index = 1 [json_name="index"];
 	InterfaceId InterfaceId = 2 [json_name="interface-id"];
 }
 
@@ -114,4 +116,57 @@ message Request {
 message ConfigRequest {
   float Version = 1 [json_name="version"];
   repeated Request Requests = 2 [json_name="requests"];
+}
+
+/////////////////////////////////////////////////
+/*              RESPONSE STRUCTURE             */
+/////////////////////////////////////////////////
+
+message StatusInfo {
+	int32 TalkerStatus = 1; // TODO: update to enum: 0 = None, 1 = ready, 2 = failed
+	int32 ListenerStatus = 2; // TODO: update to enum: 0 = None, 1 = ready, 2 = partial-failed, 3 = failed
+	uint32 FailureCode = 3;
+}
+
+message AccumulatedLatency {
+	uint32 AccumulatedLatency = 1;
+}
+
+message TimeAwareOffset {
+	uint32 Offset = 1; // ns, EarlisetTransmitOffset < offset < LatestTransmitOffset
+}
+
+message InterfaceConfiguration {
+	InterfaceId InterfaceId = 1;
+	int32 Type = 2; // 1 = mac-address/vlan, 2 = ipv4, 3 = ipv6
+	IeeeMacAddress MacAddr = 3;
+	IeeeVlanTag VlanTag = 4;
+	Ipv4Tuple Ipv4Tup = 5;
+	Ipv6Tuple Ipv6Tup = 6;
+	// provided if TimeAware is present in talker group
+	TimeAwareOffset TimeAwareOffset = 7;
+}
+
+message TalkerListenerStatus {
+	uint32 Index = 1;
+	AccumulatedLatency AccumulatedLatency = 2;
+	repeated InterfaceConfiguration InterfaceConfiguration = 3;
+}
+
+message StatusGroup {
+	StreamId StrId = 1;
+	StatusInfo StatusInfo = 2;
+	repeated InterfaceId FailedInterfaces = 3;
+	repeated TalkerListenerStatus StatusTalkerListener = 4;
+	repeated Interface EndStationInterfaces = 5;
+}
+
+
+message Response {
+	StatusGroup StatusGroup = 1;
+}
+
+message ConfigResponse {
+	float Version = 1;
+	repeated Response Responses = 2;
 }

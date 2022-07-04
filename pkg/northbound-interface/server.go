@@ -12,11 +12,10 @@ import (
 
 	handler "main-service/pkg/event-handler"
 	"main-service/pkg/logger"
-	"main-service/pkg/structures"
+	"main-service/pkg/structures/configuration"
 
 	"github.com/go-openapi/runtime/middleware/header"
 	"github.com/gogo/protobuf/jsonpb"
-	// "github.com/golang/protobuf/proto"
 )
 
 const PORT uint16 = 8080
@@ -46,7 +45,7 @@ func getConfig(writer http.ResponseWriter, req *http.Request) {
 	// dec := json.NewDecoder(req.Body)
 	// dec.DisallowUnknownFields()
 
-	var configRequest structures.ConfigRequest
+	var configRequest configuration.ConfigRequest
 	// err := dec.Decode(&configRequest)
 
 	err := jsonpb.Unmarshal(req.Body, &configRequest)

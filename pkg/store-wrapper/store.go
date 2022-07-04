@@ -2,12 +2,15 @@ package storewrapper
 
 import (
 	"context"
+	"fmt"
 	"main-service/pkg/logger"
-	"main-service/pkg/structures"
-	"strings"
+	"main-service/pkg/structures/configuration"
+	"main-service/pkg/structures/event"
+	"main-service/pkg/structures/notification"
 
 	"github.com/atomix/atomix-go-client/pkg/atomix"
-	"github.com/golang/protobuf/proto"
+	"github.com/google/uuid"
+	"google.golang.org/protobuf/proto"
 )
 
 var stores = []string{
@@ -42,14 +45,67 @@ func CreateStores() {
 	}
 }
 
-func LogEvent(event *structures.Event) error {
+// Log an event to k/v store
+func LogEvent(event *event.Event) error {
+	// Serialize event
+	obj, err := proto.Marshal(event)
+	if err != nil {
+		log.Errorf("Failed to marshal request: %v", err)
+		return err
+	}
+
+	// Create a URN where the serialized request will be stored
+	urn := "events.addStream."
+
+	// TODO: Generate or use some ID to keep track of the specific event
+	// urn += fmt.Sprintf("%v", uuid.New())
+	urn += fmt.Sprintf("%v", event.EventId)
+
+	// Send serialized event to it's specific path in a store
+	err = sendToStore(obj, urn)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
 
 // Take in a config request from UNI and store it in the k/v
 // store "streams" with a specific path for each request.
-func StoreUniConfRequest(req *structures.Request) error {
+func StoreUniConfRequest(req *configuration.Request) (*notification.UUID, error) {
+	// Serialize request
+	obj, err := proto.Marshal(req)
+	if err != nil {
+		log.Errorf("Failed to marshal request: %v", err)
+		return nil, err
+	}
+
+	// Create a URN where the serialized request will be stored
+	urn := "streams.requests."
+
+	// TODO: Generate or use some ID to keep track of the specific stream request
+	var requestId = notification.UUID{
+		Value: fmt.Sprintf("%v", uuid.New()),
+	}
+	urn += fmt.Sprintf("%v", requestId.Value)
+
+	// log.Infof("URN now looks like: %s", urn)
+
+	// Send serialized request to it's specific path in a store
+	err = sendToStore(obj, urn)
+	if err != nil {
+		return nil, err
+	}
+
+	return &requestId, nil
+}
+
+//////////////////////////////////////////////////
+/*                   TEMPLATE                   */
+//////////////////////////////////////////////////
+/*
+
+func PublicFunctionName(req structureType) error {
 	// Serialize request
 	obj, err := proto.Marshal(req)
 	if err != nil {
@@ -58,10 +114,10 @@ func StoreUniConfRequest(req *structures.Request) error {
 	}
 
 	// Create a URN where the serialized request will be stored
-	urn := "streams.requests."
+	urn := "store.type."
 
 	// TODO: Generate or use some ID to keep track of the specific stream request
-	urn += "someId"
+	urn += fmt.Sprintf("%v", uuid.New())
 
 	// Send serialized request to it's specific path in a store
 	err = sendToStore(obj, urn)
@@ -72,56 +128,4 @@ func StoreUniConfRequest(req *structures.Request) error {
 	return nil
 }
 
-// Takes in an object as a byte slice, a URN in the
-// format of "storeName.Resource", and stores the
-// structure at the URN.
-func sendToStore(obj []byte, urn string) error {
-	ctx := context.Background()
-
-	// Create a slice of URN elements
-	urnElems := strings.Split(urn, ".")
-
-	// Get the store
-	store, err := atomix.GetMap(ctx, urnElems[0])
-	if err != nil {
-		log.Errorf("Failed getting store \"%s\": %v", urnElems[0], err)
-		return err
-	}
-
-	// TODO: Check if the URN contains more complex path and do something special then
-
-	// Store the object
-	_, err = store.Put(ctx, urnElems[1], obj)
-	if err != nil {
-		log.Errorf("Failed storing resource \"%s\": %v", urnElems[1], err)
-		return err
-	}
-
-	return nil
-}
-
-// Takes in a URN in the format "storeName.Resource.Resource" and
-// returns the structure for the requested resource.
-func Get(urn string) (interface{}, error) {
-	// Create a slice of urn elements
-	urnElems := strings.Split(urn, ".")
-
-	// Request object from store
-	obj, err := getObjectFromStore(urnElems[0], urnElems[1])
-	if err != nil {
-		log.Errorf("Failed getting object from store: %v", err)
-		return nil, err
-	}
-
-	// Get requested resource from the object
-
-	return obj, nil
-}
-
-// Takes in name of store and resource and returns structure
-// containing the resource.
-func getObjectFromStore(storeName string, resourceName string) (interface{}, error) {
-	obj, err := getResource(storeName, resourceName)
-
-	return obj, err
-}
+*/

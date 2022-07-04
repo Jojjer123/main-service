@@ -1,5 +1,7 @@
 syntax = "proto3";
-package structures;
+package event;
+
+option go_package = "/event";
 
 /////////////////////////////////////////////////
 /*                    EVENT                    */

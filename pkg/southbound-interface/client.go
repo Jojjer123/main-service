@@ -4,17 +4,16 @@ import (
 	// "context"
 
 	"main-service/pkg/logger"
-	store "main-service/pkg/store-wrapper"
-	"main-service/pkg/structures"
-
-	"github.com/gogo/protobuf/proto"
+	// store "main-service/pkg/store-wrapper"
+	"main-service/pkg/structures/configuration"
+	// "github.com/gogo/protobuf/proto"
 	// gclient "github.com/openconfig/gnmi/client/gnmi"
 	// "github.com/openconfig/gnmi/proto/gnmi"
 )
 
 var log = logger.GetLogger()
 
-func StoreRequestInStorage(configRequest *structures.ConfigRequest) {
+func StoreRequestInStorage(configRequest *configuration.ConfigRequest) {
 	// data, err := proto.Marshal(configRequest)
 	// if err != nil {
 	// 	log.Errorf("Failed marshaling: %v", err)
@@ -65,56 +64,24 @@ func StoreRequestInStorage(configRequest *structures.ConfigRequest) {
 }
 
 func GetConfigFromStorage() []byte {
-	resource, err := store.Get("configurations.testing")
-	if err != nil {
-		log.Errorf("Error storing configuration request: %v", err)
-		return nil
-	}
-
-	test, ok := resource.(structures.ConfigRequest)
-	if !ok {
-		log.Errorf("Failed type assertion on: %v", test)
-		return nil
-	}
-
-	config, err := proto.Marshal(&test)
-	if err != nil {
-		log.Errorf("Failed marshaling config: %v", err)
-		return nil
-	}
-
-	return config
-
-	// log.Info("Stored configuration request!")
-
-	// ctx := context.Background()
-
-	// c, err := createGnmiClient("storage-service", ctx)
+	// resource, err := store.Get("configurations.testing")
 	// if err != nil {
+	// 	log.Errorf("Error storing configuration request: %v", err)
 	// 	return nil
 	// }
 
-	// defer c.Close()
-
-	// request := createGetRequest()
-
-	// var response *gnmi.GetResponse
-	// response, err = c.(*gclient.Client).Get(ctx, request)
-	// if err != nil {
-	// 	log.Errorf("Set request failed: %v", err)
+	// test, ok := resource.(structures.ConfigRequest)
+	// if !ok {
+	// 	log.Errorf("Failed type assertion on: %v", test)
 	// 	return nil
 	// }
 
-	// if len(response.Notification) > 1 {
-	// 	log.Error("More than one update from storage-service")
+	// config, err := proto.Marshal(&test)
+	// if err != nil {
+	// 	log.Errorf("Failed marshaling config: %v", err)
+	// 	return nil
 	// }
 
-	// var data []byte
-
-	// for _, notification := range response.Notification {
-	// 	log.Info("Received main conf from storage!")
-	// 	data = notification.Update[0].Val.GetJsonVal()
-	// }
-
-	// return data
+	// return config
+	return []byte{}
 }

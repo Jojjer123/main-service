@@ -144,44 +144,44 @@ package structures
 //      Response structure      //
 //////////////////////////////////
 
-type StatusInfo struct {
-	TalkerStatus   int //todo: update to enum: 0=None, 1=ready, 2=failed
-	ListenerStatus int //todo: update to enum: 0=None, 1=ready, 2=partial-failed, 3=failed
-	FailureCode    uint8
-}
+// type StatusInfo struct {
+// 	TalkerStatus   int //todo: update to enum: 0=None, 1=ready, 2=failed
+// 	ListenerStatus int //todo: update to enum: 0=None, 1=ready, 2=partial-failed, 3=failed
+// 	FailureCode    uint8
+// }
 
-type AccumulatedLatency struct {
-	AccumulatedLatency uint32
-}
+// type AccumulatedLatency struct {
+// 	AccumulatedLatency uint32
+// }
 
-type TimeAwareOffset struct {
-	Offset uint32 //ns, EarliestTransmitOffset < offset < LatestTransmitOffset
-}
+// type TimeAwareOffset struct {
+// 	Offset uint32 //ns, EarliestTransmitOffset < offset < LatestTransmitOffset
+// }
 
-type InterfaceConfiguration struct {
-	InterfaceId InterfaceId
-	Typ         int // 1 = macaddress/vlan, 2 = ipv4, 3 = ipv6
-	MacAddr     *IeeeMacAddress
-	VlanTag     *IeeeVlanTag
-	Ipv4Tup     *Ipv4Tuple
-	Ipv6Tup     *Ipv6Tuple
-	// provided iff TimeAware is present in talker group
-	TimeAwareOffset *TimeAwareOffset
-}
+// type InterfaceConfiguration struct {
+// 	InterfaceId InterfaceId
+// 	Typ         int // 1 = macaddress/vlan, 2 = ipv4, 3 = ipv6
+// 	MacAddr     *IeeeMacAddress
+// 	VlanTag     *IeeeVlanTag
+// 	Ipv4Tup     *Ipv4Tuple
+// 	Ipv6Tup     *Ipv6Tuple
+// 	// provided iff TimeAware is present in talker group
+// 	TimeAwareOffset *TimeAwareOffset
+// }
 
-type TalkerListenerStatus struct {
-	AccumulatedLatency     AccumulatedLatency
-	InterfaceConfiguration []InterfaceConfiguration
-}
+// type TalkerListenerStatus struct {
+// 	AccumulatedLatency     AccumulatedLatency
+// 	InterfaceConfiguration []InterfaceConfiguration
+// }
 
-type StatusGroup struct {
-	//StrId StreamId
-	StatusInfo           StatusInfo
-	FailedInterfaces     *[]InterfaceId
-	StatusTalkerListener []TalkerListenerStatus
-	EndStationInterfaces *[]Interface
-}
+// type StatusGroup struct {
+// 	//StrId StreamId
+// 	StatusInfo           StatusInfo
+// 	FailedInterfaces     *[]InterfaceId
+// 	StatusTalkerListener []TalkerListenerStatus
+// 	EndStationInterfaces *[]Interface
+// }
 
-type Response struct {
-	StatusGroup StatusGroup
-}
+// type Response struct {
+// 	StatusGroup StatusGroup
+// }
