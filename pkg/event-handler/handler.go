@@ -3,12 +3,17 @@ package eventhandler
 import (
 	"main-service/pkg/logger"
 	"main-service/pkg/structures/configuration"
+	"time"
 )
 
 var log = logger.GetLogger()
 
-// TODO: Change response structure to instead be protobuf, it is currently normal structure
+// Take in a configuratin request, process it and once a configuration
+// has been calculated, return a configuration response.
 func HandleEvent(event *configuration.ConfigRequest) (*configuration.Response, error) {
+
+	start := time.Now().UnixMilli()
+
 	// Store requests in storage and log the events
 	requestIds, err := storeRequestsInStore(event.Requests)
 	if err != nil {
@@ -29,6 +34,10 @@ func HandleEvent(event *configuration.ConfigRequest) (*configuration.Response, e
 
 		log.Infof("Configuration calculated with ID: %s", configId.GetValue())
 	}
+
+	end := time.Now().UnixMilli()
+
+	log.Infof("Time to complete: %v ms", end-start)
 
 	// TODO: Finalize configuration
 
