@@ -10,7 +10,7 @@ import (
 
 // Notifies the TSN service through gRPC that it should start calculating
 // a new configuration.
-func notifyTsnService(reqId *notification.UUID) (*notification.UUID, error) {
+func notifyTsnService(reqIds *notification.IdList) (*notification.UUID, error) {
 	// Create gRPC client and connect to TSN service
 	// (consider having a constant connection to TSN service)
 	conn, err := grpc.Dial("tsn-service:5000", grpc.WithInsecure())
@@ -23,7 +23,7 @@ func notifyTsnService(reqId *notification.UUID) (*notification.UUID, error) {
 
 	client := notification.NewNotificationClient(conn)
 
-	confId, err := client.CalcConfig(context.Background(), reqId)
+	confId, err := client.CalcConfig(context.Background(), reqIds)
 	if err != nil {
 		log.Fatalf("Calculating configuration failed: %v", err)
 		return nil, err

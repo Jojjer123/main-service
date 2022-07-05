@@ -11,7 +11,7 @@ import (
 )
 
 // Takes in requests, stores them, and logs the events
-func storeRequestsInStore(requestList []*configuration.Request) ([]*notification.UUID, error) {
+func storeRequestsInStore(requestList []*configuration.Request) (*notification.IdList, error) {
 	var storingOk = true
 	var err error
 	var requestIds []*notification.UUID
@@ -20,7 +20,7 @@ func storeRequestsInStore(requestList []*configuration.Request) ([]*notification
 	for _, request := range requestList {
 		id, err := store.StoreUniConfRequest(request)
 		requestIds = append(requestIds, &notification.UUID{
-			Value: fmt.Sprintf("%v", id),
+			Value: fmt.Sprintf("%v", id.GetValue()),
 		})
 
 		if err != nil {
@@ -38,7 +38,11 @@ func storeRequestsInStore(requestList []*configuration.Request) ([]*notification
 		return nil, err
 	}
 
-	return requestIds, nil
+	var reqIdList = notification.IdList{
+		Values: requestIds,
+	}
+
+	return &reqIdList, nil
 }
 
 // Create and store an event
