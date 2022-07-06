@@ -5,6 +5,7 @@ import (
 	// "errors"
 	"errors"
 	"fmt"
+	"time"
 
 	// "io"
 	"net/http"
@@ -39,13 +40,11 @@ func StartServer() {
 }
 
 func getConfig(writer http.ResponseWriter, req *http.Request) {
-	if req.Header.Get("Content-Type") != "" {
-		value, _ := header.ParseValueAndParams(req.Header, "Content-Type")
-		if value != "application/json" {
-			msg := "Content-Type header is not application/json"
-			http.Error(writer, msg, http.StatusUnsupportedMediaType)
-			return
-		}
+	timeOfReq := time.Now()
+
+	if err := checkHeader(req); err != nil {
+		http.Error(writer, err.Error(), http.StatusUnsupportedMediaType)
+		return
 	}
 	//
 	// dec := json.NewDecoder(req.Body)
@@ -110,7 +109,7 @@ func getConfig(writer http.ResponseWriter, req *http.Request) {
 	//
 	// Call handler to deal with addStream request
 	// confId, err = handler.HandleAddStreamEvent(&configRequest)
-	_, err = handler.HandleAddStreamEvent(&configRequest)
+	_, err = handler.HandleAddStreamEvent(&configRequest, timeOfReq)
 	if err != nil {
 		log.Errorf("Failed handling event: %v", err)
 		http.Error(writer, "Error in request???", http.StatusBadRequest)
@@ -130,6 +129,7 @@ func getConfig(writer http.ResponseWriter, req *http.Request) {
 func updateStream(writer http.ResponseWriter, req *http.Request) {
 	if err := checkHeader(req); err != nil {
 		http.Error(writer, err.Error(), http.StatusUnsupportedMediaType)
+		return
 	}
 
 	// var updateRequest stream.updateRequest
@@ -149,18 +149,21 @@ func updateStream(writer http.ResponseWriter, req *http.Request) {
 func removeStream(writer http.ResponseWriter, req *http.Request) {
 	if err := checkHeader(req); err != nil {
 		http.Error(writer, err.Error(), http.StatusUnsupportedMediaType)
+		return
 	}
 }
 
 func joinStream(writer http.ResponseWriter, req *http.Request) {
 	if err := checkHeader(req); err != nil {
 		http.Error(writer, err.Error(), http.StatusUnsupportedMediaType)
+		return
 	}
 }
 
 func leaveStream(writer http.ResponseWriter, req *http.Request) {
 	if err := checkHeader(req); err != nil {
 		http.Error(writer, err.Error(), http.StatusUnsupportedMediaType)
+		return
 	}
 }
 

@@ -32,7 +32,7 @@ message Event {
 	repeated EventHandler Handlers = 4;
 	string EventGroupId = 5;
 	uint32 ExecutionTime = 6;
-	uint32 OccuranceTime = 7;
+	int64 OccurenceTime = 7;
 	uint32 Duration = 8;
 	LogInfo LogInfo = 9;
 }

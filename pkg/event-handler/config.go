@@ -6,12 +6,13 @@ import (
 	"main-service/pkg/structures/configuration"
 	"main-service/pkg/structures/event"
 	"main-service/pkg/structures/notification"
+	"time"
 
 	"github.com/google/uuid"
 )
 
 // Takes in requests, stores them, and logs the events
-func storeRequestsInStore(requestList []*configuration.Request) (*notification.IdList, error) {
+func storeRequestsInStore(requestList []*configuration.Request, timeOfReq time.Time) (*notification.IdList, error) {
 	var storingOk = true
 	var err error
 	var requestIds []*notification.UUID
@@ -26,7 +27,7 @@ func storeRequestsInStore(requestList []*configuration.Request) (*notification.I
 		if err != nil {
 			storingOk = false
 		} else {
-			if err = storeEvent(request); err != nil {
+			if err = storeEvent(request, timeOfReq); err != nil {
 				return nil, err
 			}
 		}
@@ -46,9 +47,9 @@ func storeRequestsInStore(requestList []*configuration.Request) (*notification.I
 }
 
 // Create and store an event
-func storeEvent(req *configuration.Request) error {
+func storeEvent(req *configuration.Request, timeOfReq time.Time) error {
 	// Create an event from the request
-	ev, err := createEvent(req)
+	ev, err := createEvent(req, timeOfReq)
 	if err != nil {
 		log.Errorf("Failed creating event from request: %v", err)
 		return err
@@ -64,7 +65,7 @@ func storeEvent(req *configuration.Request) error {
 }
 
 // Create an event from the request
-func createEvent(req *configuration.Request) (*event.Event, error) {
+func createEvent(req *configuration.Request, timeOfReq time.Time) (*event.Event, error) {
 	// TODO: Add correct data to event, still don't know:
 	// 		* Event types that should exist
 	// 		* What is a Handler
@@ -79,7 +80,7 @@ func createEvent(req *configuration.Request) (*event.Event, error) {
 		Status:        event.EventStatus_PASSED,
 		Handlers:      []*event.EventHandler{},
 		EventGroupId:  fmt.Sprintf("%v", uuid.New()),
-		OccuranceTime: 123,
+		OccurenceTime: timeOfReq.UnixNano(),
 		Duration:      123,
 		LogInfo:       &event.LogInfo{},
 	}

@@ -11,12 +11,12 @@ var log = logger.GetLogger()
 
 // Take in a configuratin request, process it and once a configuration
 // has been calculated, return ID of the new configuration.
-func HandleAddStreamEvent(event *configuration.ConfigRequest) (*notification.UUID, error) {
+func HandleAddStreamEvent(event *configuration.ConfigRequest, timeOfReq time.Time) (*notification.UUID, error) {
 
 	start := time.Now().UnixMilli()
 
 	// Store requests in storage and log the events
-	requestIds, err := storeRequestsInStore(event.Requests)
+	requestIds, err := storeRequestsInStore(event.Requests, timeOfReq)
 	if err != nil {
 		log.Errorf("Failed storing and logging events: %v", err)
 		return nil, err
