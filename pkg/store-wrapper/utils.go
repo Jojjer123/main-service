@@ -101,8 +101,9 @@ func getTopoFromStore() {
 	}
 
 	// Get all objects in store
-	entryChannel := make(chan _map.Entry)
-	err = store.Entries(ctx, entryChannel)
+	eventChannel := make(chan _map.Event)
+	err = store.Watch(ctx, eventChannel)
+	// err = store.Entries(ctx, entryChannel)
 	if err != nil {
 		log.Errorf("Failed getting entries: %v", err)
 		return
@@ -111,10 +112,8 @@ func getTopoFromStore() {
 	go func() {
 		for {
 			select {
-			case entry := <-entryChannel:
-				if entry.Key != "" {
-					log.Infof("Entry: %v", entry)
-				}
+			case event := <-eventChannel:
+				log.Infof("Event: %v", event)
 			}
 		}
 	}()
