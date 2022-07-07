@@ -1,24 +1,27 @@
 package northboundinterface
 
 import (
+	// "bytes"
 	// "encoding/json"
-	// "errors"
 	"errors"
 	"fmt"
-	"time"
 
 	// "io"
+	// "io/ioutil"
 	"net/http"
 	"reflect"
 
 	// "strings"
+	"time"
 
 	handler "main-service/pkg/event-handler"
 	"main-service/pkg/logger"
+	store "main-service/pkg/store-wrapper"
 	"main-service/pkg/structures/configuration"
 
 	"github.com/go-openapi/runtime/middleware/header"
 	"github.com/gogo/protobuf/jsonpb"
+	"google.golang.org/protobuf/encoding/protojson"
 )
 
 const PORT uint16 = 8080
@@ -46,27 +49,39 @@ func getConfig(writer http.ResponseWriter, req *http.Request) {
 		http.Error(writer, err.Error(), http.StatusUnsupportedMediaType)
 		return
 	}
-	//
-	// dec := json.NewDecoder(req.Body)
-	// dec.DisallowUnknownFields()
-	//
+
+	// body, err := ioutil.ReadAll(req.Body)
+	// if err != nil {
+	// 	log.Errorf("Failed reading body: %v", err)
+	// }
+
 	var configRequest configuration.ConfigRequest
-	// err := dec.Decode(&configRequest)
-	//
+
+	// ioReader := ioutil.NopCloser(bytes.NewBuffer(body))
+
 	err := jsonpb.Unmarshal(req.Body, &configRequest)
 	if err != nil {
 		log.Errorf("Failed to read req.Body: %v", err)
 		http.Error(writer, "Failed to read body", http.StatusBadRequest)
 		return
 	}
-	//
+
 	log.Infof("%+v", reflect.TypeOf(req.Body))
-	//
-	// NEED A REMAKE TO SUIT PROTO UMARSHSALING ERRORS
+
+	// ioReader = ioutil.NopCloser(bytes.NewBuffer(body))
+
+	// dec := json.NewDecoder(ioReader)
+	// dec.DisallowUnknownFields()
+
+	// var testReq configuration.ConfigRequest
+
+	// err = dec.Decode(&testReq)
+
+	// // NEED A REMAKE TO SUIT PROTO UMARSHSALING ERRORS
 	// if err != nil {
 	// 	var syntaxError *json.SyntaxError
 	// 	var unmarshalTypeError *json.UnsupportedTypeError
-	//
+
 	// 	switch {
 	// 	case errors.As(err, &syntaxError):
 	// 		msg := fmt.Sprintf("Request body contains badly-formed JSON (at position %d)", syntaxError.Offset)
@@ -94,36 +109,52 @@ func getConfig(writer http.ResponseWriter, req *http.Request) {
 	// 	}
 	// 	return
 	// }
-	//
+
 	// err = dec.Decode(&struct{}{})
 	// if err != io.EOF {
 	// 	msg := "Request body must only contain a single JSON object"
 	// 	http.Error(writer, msg, http.StatusBadRequest)
 	// 	return
 	// }
-	//
-	// data, err := json.Marshal(configRequest)
-	// if err != nil {
-	// 	panic(err)
-	// }
-	//
+
 	// Call handler to deal with addStream request
-	// confId, err = handler.HandleAddStreamEvent(&configRequest)
-	_, err = handler.HandleAddStreamEvent(&configRequest, timeOfReq)
+	confId, err := handler.HandleAddStreamEvent(&configRequest, timeOfReq)
+	// _, err = handler.HandleAddStreamEvent(&configRequest, timeOfReq)
 	if err != nil {
 		log.Errorf("Failed handling event: %v", err)
 		http.Error(writer, "Error in request???", http.StatusBadRequest)
 		return
 	}
-	//
+
 	// log.Info("Handled event!")
-	//
+
 	// Write configRequest back to client
 	// fmt.Fprintf(writer, "request: %+v", configRequest)
-	//
-	// writer.Header().Add("Content-Type", "application/json; charset=utf-8")
-	// writer.Write(data)
-	writer.Write([]byte("Done!"))
+
+	// TODO: BUILD RESPONSE (SIMULATE BUILD FOR NOW, NEED TO MOVE FROM TSN-SERVICE TO HERE LATER ON)
+	// log.Infof("confId.GetValue(): %v", confId.GetValue())
+	confIdString := fmt.Sprintf("%v", confId.GetValue())
+	confData, err := store.GetResponseData(confIdString)
+	if err != nil {
+		log.Errorf("Failed getting response data: %v", err)
+		return
+	}
+
+	// log.Infof("confData: %v", confData)
+
+	data, err := protojson.Marshal(confData)
+
+	// data, err := json.Marshal(confData)
+	if err != nil {
+		log.Errorf("Failed marshaling confData: %v", err)
+		return
+	}
+
+	// log.Infof("Data: %v", data)
+
+	writer.Header().Add("Content-Type", "application/json; charset=utf-8")
+	writer.Write(data)
+	// writer.Write([]byte("Done!"))
 }
 
 func updateStream(writer http.ResponseWriter, req *http.Request) {

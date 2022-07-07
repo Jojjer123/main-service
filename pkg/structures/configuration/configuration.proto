@@ -123,50 +123,50 @@ message ConfigRequest {
 /////////////////////////////////////////////////
 
 message StatusInfo {
-	int32 TalkerStatus = 1; // TODO: update to enum: 0 = None, 1 = ready, 2 = failed
-	int32 ListenerStatus = 2; // TODO: update to enum: 0 = None, 1 = ready, 2 = partial-failed, 3 = failed
-	uint32 FailureCode = 3;
+	int32 TalkerStatus = 1 [json_name="talker-status"]; // TODO: update to enum: 0 = None, 1 = ready, 2 = failed
+	int32 ListenerStatus = 2 [json_name="listener-status"]; // TODO: update to enum: 0 = None, 1 = ready, 2 = partial-failed, 3 = failed
+	uint32 FailureCode = 3 [json_name="failure-code"];
 }
 
 message AccumulatedLatency {
-	uint32 AccumulatedLatency = 1;
+	uint32 AccumulatedLatency = 1 [json_name="accumulated-latency"];
 }
 
 message TimeAwareOffset {
-	uint32 Offset = 1; // ns, EarlisetTransmitOffset < offset < LatestTransmitOffset
+	uint32 Offset = 1 [json_name="offset"]; // ns, EarlisetTransmitOffset < offset < LatestTransmitOffset
 }
 
 message InterfaceConfiguration {
-	InterfaceId InterfaceId = 1;
-	int32 Type = 2; // 1 = mac-address/vlan, 2 = ipv4, 3 = ipv6
-	IeeeMacAddress MacAddr = 3;
-	IeeeVlanTag VlanTag = 4;
-	Ipv4Tuple Ipv4Tup = 5;
-	Ipv6Tuple Ipv6Tup = 6;
+	InterfaceId InterfaceId = 1 [json_name="interface-id"];
+	int32 Type = 2 [json_name="type"]; // 1 = mac-address/vlan, 2 = ipv4, 3 = ipv6
+	IeeeMacAddress MacAddr = 3 [json_name="mac-address"];
+	IeeeVlanTag VlanTag = 4 [json_name="vlan-tag"];
+	Ipv4Tuple Ipv4Tup = 5 [json_name="ipv4-tuple"];
+	Ipv6Tuple Ipv6Tup = 6 [json_name="ipv6-tuple"];
 	// provided if TimeAware is present in talker group
-	TimeAwareOffset TimeAwareOffset = 7;
+	TimeAwareOffset TimeAwareOffset = 7 [json_name="time-aware-offset"];
 }
 
 message TalkerListenerStatus {
-	uint32 Index = 1;
-	AccumulatedLatency AccumulatedLatency = 2;
-	repeated InterfaceConfiguration InterfaceConfiguration = 3;
+	uint32 Index = 1 [json_name="index"];
+	AccumulatedLatency AccumulatedLatency = 2 [json_name="accumulated-latency"];
+	repeated InterfaceConfiguration InterfaceConfiguration = 3 [json_name="interface-configuration"];
 }
 
 message StatusGroup {
-	StreamId StrId = 1;
-	StatusInfo StatusInfo = 2;
-	repeated InterfaceId FailedInterfaces = 3;
-	repeated TalkerListenerStatus StatusTalkerListener = 4;
-	repeated Interface EndStationInterfaces = 5;
+	StreamId StrId = 1 [json_name="stream-id"];
+	StatusInfo StatusInfo = 2 [json_name="status-info"];
+	repeated InterfaceId FailedInterfaces = 3 [json_name="failed-interfaces"];
+	repeated TalkerListenerStatus StatusTalkerListener = 4 [json_name="status-talker-listener"];
+	repeated Interface EndStationInterfaces = 5 [json_name="end-station-interfaces"];
 }
 
 
 message Response {
-	StatusGroup StatusGroup = 1;
+	StatusGroup StatusGroup = 1 [json_name="status-group"];
 }
 
 message ConfigResponse {
-	float Version = 1;
-	repeated Response Responses = 2;
+	float Version = 1 [json_name="version"];
+	repeated Response Responses = 2 [json_name="responses"];
 }

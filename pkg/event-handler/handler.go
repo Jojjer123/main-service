@@ -2,8 +2,10 @@ package eventhandler
 
 import (
 	"main-service/pkg/logger"
+	// store "main-service/pkg/store-wrapper"
 	"main-service/pkg/structures/configuration"
 	"main-service/pkg/structures/notification"
+
 	"time"
 )
 
@@ -12,6 +14,7 @@ var log = logger.GetLogger()
 // Take in a configuratin request, process it and once a configuration
 // has been calculated, return ID of the new configuration.
 func HandleAddStreamEvent(event *configuration.ConfigRequest, timeOfReq time.Time) (*notification.UUID, error) {
+	// store.GetTopology()
 
 	start := time.Now().UnixMilli()
 
@@ -52,5 +55,5 @@ func HandleAddStreamEvent(event *configuration.ConfigRequest, timeOfReq time.Tim
 
 	// TODO: Send something to config-service to use new configuration
 
-	return nil, nil
+	return configId, nil
 }

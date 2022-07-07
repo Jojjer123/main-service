@@ -15,10 +15,10 @@ import (
 
 var stores = []string{
 	"configurations",
-	"resources",
+	// "resources",
 	"streams",
-	"topology",
-	"metrics",
+	// "topology",
+	// "metrics",
 	"events",
 }
 
@@ -99,6 +99,34 @@ func StoreUniConfRequest(req *configuration.Request) (*notification.UUID, error)
 
 	return &requestId, nil
 }
+
+func GetResponseData(configId string) (*configuration.ConfigResponse, error) {
+	// Build the URN for the request data
+	urn := "configurations.tsn-configuration." + configId
+
+	log.Info(urn)
+
+	// Send request to specific path in k/v store "streams"
+	respData, err := getFromStore(urn)
+	if err != nil {
+		log.Errorf("Failed getting request data from store: %v", err)
+		return nil, err
+	}
+
+	// data, err := proto.Marshal(respData)
+	// if err != nil {
+	// 	log.Errorf("Failed marshaling response data: %v", err)
+	// 	return nil, err
+	// }
+
+	return respData, nil
+}
+
+// func GetTopology() (struct{}, error) {
+// 	getFromStore()
+
+// 	return struct{}{}, nil
+// }
 
 //////////////////////////////////////////////////
 /*                   TEMPLATE                   */
