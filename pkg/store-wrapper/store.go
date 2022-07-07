@@ -122,11 +122,11 @@ func GetResponseData(configId string) (*configuration.ConfigResponse, error) {
 	return respData, nil
 }
 
-// func GetTopology() (struct{}, error) {
-// 	getFromStore()
+func GetTopology() (struct{}, error) {
+	getTopoFromStore()
 
-// 	return struct{}{}, nil
-// }
+	return struct{}{}, nil
+}
 
 //////////////////////////////////////////////////
 /*                   TEMPLATE                   */

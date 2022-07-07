@@ -12,8 +12,8 @@ import (
 
 	// "github.com/onosproject/onos-lib-go/pkg/certs"
 	// "google.golang.org/grpc"
+	_map "github.com/atomix/atomix-go-client/pkg/atomix/map"
 	"google.golang.org/protobuf/proto"
-	// _map "github.com/atomix/atomix-go-client/pkg/atomix/map"
 )
 
 // Takes in an object as a byte slice, a URN in the
@@ -89,67 +89,67 @@ func getFromStore(urn string) (*configuration.ConfigResponse, error) {
 	return &req, nil
 }
 
-// // ONLY FOR TESTING
-// func getTopoFromStore() {
-// 	ctx := context.Background()
+// ONLY FOR TESTING
+func getTopoFromStore() {
+	ctx := context.Background()
 
-// 	// Get the store
-// 	store, err := atomix.GetMap(ctx, "onos-topo-objects")
-// 	if err != nil {
-// 		log.Errorf("Failed getting store: %v", err)
-// 		return
-// 	}
+	// Get the store
+	store, err := atomix.GetMap(ctx, "onos-topo-objects")
+	if err != nil {
+		log.Errorf("Failed getting store: %v", err)
+		return
+	}
 
-// 	// Get all objects in store
-// 	entryChannel := make(chan _map.Entry)
-// 	err = store.Entries(ctx, entryChannel)
-// 	if err != nil {
-// 		log.Errorf("Failed getting entries: %v", err)
-// 		return
-// 	}
+	// Get all objects in store
+	entryChannel := make(chan _map.Entry)
+	err = store.Entries(ctx, entryChannel)
+	if err != nil {
+		log.Errorf("Failed getting entries: %v", err)
+		return
+	}
 
-// 	go func() {
-// 		for {
-// 			select {
-// 			case entry := <-entryChannel:
-// 				if entry.Key != "" {
-// 					log.Infof("Entry: %v", entry)
-// 				}
-// 			}
-// 		}
-// 	}()
-// 	//
+	// go func() {
+	// 	for {
+	// 		select {
+	// 		case entry := <-entryChannel:
+	// 			if entry.Key != "" {
+	// 				log.Infof("Entry: %v", entry)
+	// 			}
+	// 		}
+	// 	}
+	// }()
+	//
 
-// 	//
+	//
 
-// 	//
+	//
 
-// 	//
+	//
 
-// 	conn := getConn(ctx)
-// 	if conn == nil {
-// 		log.Error("Failed getting conn!")
-// 		return
-// 	}
+	// conn := getConn(ctx)
+	// if conn == nil {
+	// 	log.Error("Failed getting conn!")
+	// 	return
+	// }
 
-// 	// defer conn.Close()
+	// defer conn.Close()
 
-// 	// client := topo.NewTopoClient(conn)
+	// client := topo.NewTopoClient(conn)
 
-// 	// // filters := &topo.Filters{
-// 	// // 	KindFilter: &topo.Filter{
-// 	// // 		Filter: &topo.Filter_In{In: &topo.InFilter{Values: []string{topo.E2NODE, topo.E2CELL}}},
-// 	// // 	},
-// 	// // }
+	// // filters := &topo.Filters{
+	// // 	KindFilter: &topo.Filter{
+	// // 		Filter: &topo.Filter_In{In: &topo.InFilter{Values: []string{topo.E2NODE, topo.E2CELL}}},
+	// // 	},
+	// // }
 
-// 	// resp, err := client.List(ctx, &topo.ListRequest{SortOrder: topo.SortOrder_ASCENDING})
-// 	// if err != nil {
-// 	// 	log.Fatalf("Failed getting topo list: %v", err)
-// 	// 	return
-// 	// }
+	// resp, err := client.List(ctx, &topo.ListRequest{SortOrder: topo.SortOrder_ASCENDING})
+	// if err != nil {
+	// 	log.Fatalf("Failed getting topo list: %v", err)
+	// 	return
+	// }
 
-// 	// log.Infof("Response: %v", resp)
-// }
+	// log.Infof("Response: %v", resp)
+}
 
 // func getConn(ctx context.Context) *grpc.ClientConn {
 // 	release := helm.Chart("open-cnc").Release("open-cnc")
