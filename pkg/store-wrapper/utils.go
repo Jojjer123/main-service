@@ -108,16 +108,16 @@ func getTopoFromStore() {
 		return
 	}
 
-	// go func() {
-	// 	for {
-	// 		select {
-	// 		case entry := <-entryChannel:
-	// 			if entry.Key != "" {
-	// 				log.Infof("Entry: %v", entry)
-	// 			}
-	// 		}
-	// 	}
-	// }()
+	go func() {
+		for {
+			select {
+			case entry := <-entryChannel:
+				if entry.Key != "" {
+					log.Infof("Entry: %v", entry)
+				}
+			}
+		}
+	}()
 	//
 
 	//
