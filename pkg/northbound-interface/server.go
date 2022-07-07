@@ -3,8 +3,11 @@ package northboundinterface
 import (
 	// "bytes"
 	// "encoding/json"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
+	"strings"
 
 	// "io"
 	// "io/ioutil"
@@ -60,13 +63,6 @@ func getConfig(writer http.ResponseWriter, req *http.Request) {
 	// ioReader := ioutil.NopCloser(bytes.NewBuffer(body))
 
 	err := jsonpb.Unmarshal(req.Body, &configRequest)
-	if err != nil {
-		log.Errorf("Failed to read req.Body: %v", err)
-		http.Error(writer, "Failed to read body", http.StatusBadRequest)
-		return
-	}
-
-	log.Infof("%+v", reflect.TypeOf(req.Body))
 
 	// ioReader = ioutil.NopCloser(bytes.NewBuffer(body))
 
@@ -78,37 +74,45 @@ func getConfig(writer http.ResponseWriter, req *http.Request) {
 	// err = dec.Decode(&testReq)
 
 	// // NEED A REMAKE TO SUIT PROTO UMARSHSALING ERRORS
-	// if err != nil {
-	// 	var syntaxError *json.SyntaxError
-	// 	var unmarshalTypeError *json.UnsupportedTypeError
+	if err != nil {
+		var syntaxError *json.SyntaxError
+		var unmarshalTypeError *json.UnsupportedTypeError
 
-	// 	switch {
-	// 	case errors.As(err, &syntaxError):
-	// 		msg := fmt.Sprintf("Request body contains badly-formed JSON (at position %d)", syntaxError.Offset)
-	// 		http.Error(writer, msg, http.StatusBadRequest)
-	// 	case errors.Is(err, io.ErrUnexpectedEOF):
-	// 		msg := "Request body contains badly-formed JSON"
-	// 		http.Error(writer, msg, http.StatusBadRequest)
-	// 	case errors.As(err, &unmarshalTypeError):
-	// 		// msg := fmt.Sprintf("Request body contains invalid value for the %q field (at position %d)", unmarshalTypeError.Field, unmarshalTypeError.Offset)
-	// 		msg := "Request body contains invalid structure"
-	// 		http.Error(writer, msg, http.StatusBadRequest)
-	// 	case strings.HasPrefix(err.Error(), "json:unknown field"):
-	// 		fieldName := strings.TrimPrefix(err.Error(), "json:unknown field")
-	// 		msg := fmt.Sprintf("Request body contains unknown field %s", fieldName)
-	// 		http.Error(writer, msg, http.StatusBadRequest)
-	// 	case errors.Is(err, io.EOF):
-	// 		msg := "Request body must not be empty"
-	// 		http.Error(writer, msg, http.StatusBadRequest)
-	// 	case err.Error() == "http: request body too large":
-	// 		msg := "Request body must not be larger than 1MB"
-	// 		http.Error(writer, msg, http.StatusRequestEntityTooLarge)
-	// 	default:
-	// 		log.Error(err.Error())
-	// 		http.Error(writer, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-	// 	}
-	// 	return
-	// }
+		switch {
+		case errors.As(err, &syntaxError):
+			msg := fmt.Sprintf("Request body contains badly-formed JSON (at position %d)", syntaxError.Offset)
+			http.Error(writer, msg, http.StatusBadRequest)
+		case errors.Is(err, io.ErrUnexpectedEOF):
+			msg := "Request body contains badly-formed JSON"
+			http.Error(writer, msg, http.StatusBadRequest)
+		case errors.As(err, &unmarshalTypeError):
+			// msg := fmt.Sprintf("Request body contains invalid value for the %q field (at position %d)", unmarshalTypeError.Field, unmarshalTypeError.Offset)
+			msg := "Request body contains invalid structure"
+			http.Error(writer, msg, http.StatusBadRequest)
+		case strings.HasPrefix(err.Error(), "json:unknown field"):
+			fieldName := strings.TrimPrefix(err.Error(), "json:unknown field")
+			msg := fmt.Sprintf("Request body contains unknown field %s", fieldName)
+			http.Error(writer, msg, http.StatusBadRequest)
+		case errors.Is(err, io.EOF):
+			msg := "Request body must not be empty"
+			http.Error(writer, msg, http.StatusBadRequest)
+		case err.Error() == "http: request body too large":
+			msg := "Request body must not be larger than 1MB"
+			http.Error(writer, msg, http.StatusRequestEntityTooLarge)
+		default:
+			log.Error(err.Error())
+			http.Error(writer, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		}
+		return
+	}
+
+	if err != nil {
+		log.Errorf("Failed to read req.Body: %v", err)
+		http.Error(writer, "Failed to read body", http.StatusBadRequest)
+		return
+	}
+
+	log.Infof("%+v", reflect.TypeOf(req.Body))
 
 	// err = dec.Decode(&struct{}{})
 	// if err != io.EOF {
