@@ -2,17 +2,24 @@ package storewrapper
 
 import (
 	"context"
+	"crypto/tls"
+	"io"
 	"main-service/pkg/structures/configuration"
 	"strings"
 
 	"github.com/atomix/atomix-go-client/pkg/atomix"
+	"github.com/onosproject/onos-api/go/onos/topo"
+	"github.com/onosproject/onos-lib-go/pkg/certs"
+	"github.com/onosproject/onos-lib-go/pkg/errors"
+
 	// "github.com/onosproject/helmit/pkg/helm"
 	// "github.com/onosproject/helmit/pkg/kubernetes"
 	// v1 "github.com/onosproject/helmit/pkg/kubernetes/core/v1"
 
 	// "github.com/onosproject/onos-lib-go/pkg/certs"
-	// "google.golang.org/grpc"
-	_map "github.com/atomix/atomix-go-client/pkg/atomix/map"
+	// _map "github.com/atomix/atomix-go-client/pkg/atomix/map"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -93,30 +100,80 @@ func getFromStore(urn string) (*configuration.ConfigResponse, error) {
 func getTopoFromStore() {
 	ctx := context.Background()
 
-	// Get the store
-	store, err := atomix.GetMap(ctx, "onos-topo-objects")
+	cert, err := tls.X509KeyPair([]byte(certs.DefaultClientCrt), []byte(certs.DefaultClientKey))
 	if err != nil {
-		log.Errorf("Failed getting store: %v", err)
 		return
 	}
 
-	// Get all objects in store
-	eventChannel := make(chan _map.Event)
-	err = store.Watch(ctx, eventChannel)
-	// err = store.Entries(ctx, entryChannel)
+	tlsConfig := &tls.Config{
+		Certificates:       []tls.Certificate{cert},
+		InsecureSkipVerify: true,
+	}
+
+	conn, err := grpc.Dial("onos-topo:5150", grpc.WithTransportCredentials(credentials.NewTLS(tlsConfig)))
 	if err != nil {
-		log.Errorf("Failed getting entries: %v", err)
+		log.Fatalf("Failed dialing onos-topo: %v", err)
+		return
+	}
+
+	// defer conn.Close()
+
+	client := topo.CreateTopoClient(conn)
+	// resp, err := client.Create(ctx, &topo.CreateRequest{Object: &topo.Object{UUID: "123-456", Type: topo.Object_ENTITY, Obj: &topo.Object_Entity{Entity: &topo.Entity{}}}})
+	resp, err := client.List(ctx, &topo.ListRequest{})
+	if err != nil {
+		log.Fatalf("Failed listing topo object: %v", errors.FromGRPC(err))
+		return
+	}
+
+	log.Infof("Topo objects: %v", resp.Objects)
+
+	watchClient, err := client.Watch(ctx, &topo.WatchRequest{Noreplay: false})
+	if err != nil {
+		log.Fatalf("Failed to watch topo for updates: %v", errors.FromGRPC(err))
 		return
 	}
 
 	go func() {
 		for {
-			select {
-			case event := <-eventChannel:
-				log.Infof("Event: %v", event)
+			resp, err := watchClient.Recv()
+			if err == io.EOF {
+				break
 			}
+			if err != nil {
+				log.Warn(err)
+				break
+			}
+			log.Infof("Event: %v", resp.Event)
 		}
 	}()
+
+	// log.Infof("Response: %v", resp.Objects)
+
+	// // Get the store
+	// store, err := atomix.GetMap(ctx, "onos-topo-objects")
+	// if err != nil {
+	// 	log.Errorf("Failed getting store: %v", err)
+	// 	return
+	// }
+
+	// // Get all objects in store
+	// eventChannel := make(chan _map.Event)
+	// err = store.Watch(ctx, eventChannel)
+	// // err = store.Entries(ctx, entryChannel)
+	// if err != nil {
+	// 	log.Errorf("Failed getting entries: %v", err)
+	// 	return
+	// }
+
+	// go func() {
+	// 	for {
+	// 		select {
+	// 		case event := <-eventChannel:
+	// 			log.Infof("Event: %v", event)
+	// 		}
+	// 	}
+	// }()
 	//
 
 	//
