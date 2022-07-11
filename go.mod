@@ -14,13 +14,19 @@ require (
 	github.com/atomix/atomix-api/go v0.4.9 // indirect
 	github.com/atomix/atomix-go-framework v0.10.0 // indirect
 	github.com/cenkalti/backoff v2.2.1+incompatible // indirect
+	github.com/cenkalti/backoff/v4 v4.1.1 // indirect
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
+	github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b // indirect
 	github.com/golang/mock v1.6.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/kr/pretty v0.3.0 // indirect
+	github.com/kylelemons/godebug v1.1.0 // indirect
 	github.com/magiconair/properties v1.8.5 // indirect
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/mitchellh/mapstructure v1.4.3 // indirect
+	github.com/openconfig/goyang v0.0.0-20200115183954-d0a48929f0ea // indirect
+	github.com/openconfig/grpctunnel v0.0.0-20220524190229-125331eabdde // indirect
+	github.com/openconfig/ygot v0.6.0 // indirect
 	github.com/pelletier/go-toml v1.9.4 // indirect
 	github.com/spf13/afero v1.6.0 // indirect
 	github.com/spf13/cast v1.4.1 // indirect
@@ -38,6 +44,7 @@ require (
 	github.com/google/go-cmp v0.5.8 // indirect
 	github.com/onosproject/onos-api/go v0.8.2
 	github.com/onosproject/onos-lib-go v0.8.16
+	github.com/openconfig/gnmi v0.0.0-20220617175856-41246b1b3507
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.8.0 // indirect
 	golang.org/x/net v0.0.0-20220615171555-694bf12d69de // indirect
