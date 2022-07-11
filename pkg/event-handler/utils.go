@@ -2,7 +2,6 @@ package eventhandler
 
 import (
 	"context"
-
 	"main-service/pkg/structures/notification"
 
 	"google.golang.org/grpc"
@@ -30,4 +29,9 @@ func notifyTsnService(reqIds *notification.IdList) (*notification.UUID, error) {
 	}
 
 	return confId, nil
+}
+
+func applyConfiguration(id *notification.UUID) error {
+
+	return nil
 }
