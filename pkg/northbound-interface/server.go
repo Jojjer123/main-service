@@ -19,12 +19,13 @@ import (
 
 	handler "main-service/pkg/event-handler"
 	"main-service/pkg/logger"
-	store "main-service/pkg/store-wrapper"
+
+	// store "main-service/pkg/store-wrapper"
 	"main-service/pkg/structures/configuration"
 
 	"github.com/go-openapi/runtime/middleware/header"
 	"github.com/gogo/protobuf/jsonpb"
-	"google.golang.org/protobuf/encoding/protojson"
+	// "google.golang.org/protobuf/encoding/protojson"
 )
 
 const PORT uint16 = 8080
@@ -137,28 +138,31 @@ func getConfig(writer http.ResponseWriter, req *http.Request) {
 
 	// TODO: BUILD RESPONSE (SIMULATE BUILD FOR NOW, NEED TO MOVE FROM TSN-SERVICE TO HERE LATER ON)
 	// log.Infof("confId.GetValue(): %v", confId.GetValue())
-	confIdString := fmt.Sprintf("%v", confId.GetValue())
-	confData, err := store.GetResponseData(confIdString)
-	if err != nil {
-		log.Errorf("Failed getting response data: %v", err)
-		return
-	}
+	// confIdString := fmt.Sprintf("%v", confId.GetValue())
+	// confData, err := store.GetResponseData(confIdString)
+	// if err != nil {
+	// 	log.Errorf("Failed getting response data: %v", err)
+	// 	return
+	// }
 
 	// log.Infof("confData: %v", confData)
 
-	data, err := protojson.Marshal(confData)
+	// data, err := protojson.Marshal(confData)
+	// if err != nil {
+	// 	log.Errorf("Failed marshaling confData: %v", err)
+	// 	return
+	// }
 
-	// data, err := json.Marshal(confData)
+	resp, err := createResponse(confId)
 	if err != nil {
-		log.Errorf("Failed marshaling confData: %v", err)
+		log.Errorf("Failed to create UNI response!")
 		return
 	}
 
 	// log.Infof("Data: %v", data)
 
 	writer.Header().Add("Content-Type", "application/json; charset=utf-8")
-	writer.Write(data)
-	// writer.Write([]byte("Done!"))
+	writer.Write(resp)
 }
 
 func updateStream(writer http.ResponseWriter, req *http.Request) {
