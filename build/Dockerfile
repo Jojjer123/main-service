@@ -16,6 +16,8 @@ ENV HOME=/home/main-service
 RUN mkdir $HOME
 WORKDIR $HOME
 
+COPY . $HOME
+
 COPY --from=build /go/bin/main /usr/local/bin/
 
 EXPOSE 8080

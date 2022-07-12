@@ -1,13 +1,22 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"crypto/tls"
 	"fmt"
+	"io/ioutil"
+	"strings"
+
 	"main-service/pkg/logger"
 	northboundinterface "main-service/pkg/northbound-interface"
 	store "main-service/pkg/store-wrapper"
+	monitor "main-service/pkg/structures/temp-monitor-conf"
 
+	"github.com/atomix/atomix-go-client/pkg/atomix"
+	"github.com/ghodss/yaml"
+	"github.com/gogo/protobuf/jsonpb"
+	"github.com/gogo/protobuf/proto"
 	"github.com/google/uuid"
 	"github.com/onosproject/onos-api/go/onos/topo"
 	"github.com/onosproject/onos-lib-go/pkg/certs"
@@ -22,6 +31,8 @@ var log = logger.GetLogger()
 func main() {
 	// Temporarily add switches to onos-topo
 	addSwitches()
+	// Temporarily add monitor configs & adapter to atomix
+	addMonitorConf()
 
 	// Create TSN stores
 	store.CreateStores()
@@ -145,6 +156,76 @@ func createDevice(name string, addr string, kind string, model string, modelVers
 	}
 
 	log.Infof("Created device %v", resp)
+
+	return nil
+}
+
+func addMonitorConf() {
+	fileContent, err := ioutil.ReadFile("monitor-conf-example.yaml")
+	if err != nil {
+		log.Errorf("Failed reading file: %v", err)
+		return
+	}
+
+	// log.Infof("Read file: %v", fileContent)
+
+	jsonBytes, err := yaml.YAMLToJSON(fileContent)
+	if err != nil {
+		log.Errorf("Failed converting file content from yaml to json: %v", err)
+		return
+	}
+
+	var conf = &monitor.Config{}
+	if err = jsonpb.Unmarshal(bytes.NewReader(jsonBytes), conf); err != nil {
+		log.Errorf("Failed unmarshaling json to protobuf: %v", err)
+		return
+	}
+
+	log.Infof("Umarshaled into: %v", conf)
+
+	rawConf, err := proto.Marshal(conf)
+	if err != nil {
+		log.Errorf("Failed marshaling config to byte slice: %v", err)
+		return
+	}
+
+	// log.Infof("Marshaled into: %v", rawConf)
+
+	sendToStore(rawConf, "configurations.monitor-config.192.168.0.1")
+
+	data, err := proto.Marshal(&monitor.Adapter{
+		Protocol: "NETCONF",
+		Address:  "192.168.0.1",
+	})
+	if err != nil {
+		log.Errorf("Failed marshaling adapter: %v", err)
+		return
+	}
+
+	sendToStore(data, "configurations.adapter.NETCONF")
+}
+
+func sendToStore(obj []byte, urn string) error {
+	ctx := context.Background()
+
+	// Create a slice of URN elements
+	urnElems := strings.SplitN(urn, ".", 2)
+
+	// Get the store
+	store, err := atomix.GetMap(ctx, urnElems[0])
+	if err != nil {
+		log.Errorf("Failed getting store \"%s\": %v", urnElems[0], err)
+		return err
+	}
+
+	// TODO: Check if the URN contains more complex path and do something special then
+
+	// Store the object
+	_, err = store.Put(ctx, urnElems[1], obj)
+	if err != nil {
+		log.Errorf("Failed storing resource \"%s\": %v", urnElems[1], err)
+		return err
+	}
 
 	return nil
 }
