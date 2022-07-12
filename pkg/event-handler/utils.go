@@ -83,7 +83,7 @@ func getSetRequestForConfig() *pb.SetRequest {
 				Ext: &gnmi_ext.Extension_RegisteredExt{
 					RegisteredExt: &gnmi_ext.RegisteredExtension{
 						Id:  gnmi_ext.ExtensionID(101),
-						Msg: []byte("1.0.0"),
+						Msg: []byte("1.0.1"),
 					},
 				},
 			},
@@ -91,7 +91,7 @@ func getSetRequestForConfig() *pb.SetRequest {
 				Ext: &gnmi_ext.Extension_RegisteredExt{
 					RegisteredExt: &gnmi_ext.RegisteredExtension{
 						Id:  gnmi_ext.ExtensionID(102),
-						Msg: []byte("Devicesim"),
+						Msg: []byte("tsn-yang"),
 					},
 				},
 			},

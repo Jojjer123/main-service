@@ -38,7 +38,7 @@ func addSwitches() {
 	}
 
 	/************************ CREATE DEVICE ************************/
-	if err := createDevice("switch-0", "192.168.0.1", "netconf-device", "Devicesim", "1.0.0"); err != nil {
+	if err := createDevice("switch-0", "192.168.0.1", "netconf-device", "tsn-yang", "1.0.1"); err != nil {
 		log.Errorf("Failed creating device: %v", err)
 		return
 	}
