@@ -49,7 +49,7 @@ func addSwitches() {
 	}
 
 	/************************ CREATE DEVICE ************************/
-	if err := createDevice("switch-0", "192.168.0.1", "netconf-device", "tsn-yang", "1.0.1"); err != nil {
+	if err := createDevice("switch-0", "gnmi-netconf-adapter", "netconf-device", "tsn-model", "1.0.2"); err != nil {
 		log.Errorf("Failed creating device: %v", err)
 		return
 	}
@@ -140,7 +140,7 @@ func createDevice(name string, addr string, kind string, model string, modelVers
 		},
 	}
 
-	obj.SetAspectBytes("onos.topo.Configurable", []byte(fmt.Sprintf(`{"address": "%s", "version": "%s", "type": "%s"}`, addr, modelVersion, model)))
+	obj.SetAspectBytes("onos.topo.Configurable", []byte(fmt.Sprintf(`{"address": "%s", "target": "%s", "version": "%s", "type": "%s"}`, addr, "192.168.0.1", modelVersion, model)))
 	obj.SetAspectBytes("onos.topo.TLSOptions", []byte(`{"insecure": true, "plain": true}`))
 	obj.SetAspectBytes("onos.topo.Asset", []byte(fmt.Sprintf(`{"name": "%v"}`, name)))
 	obj.SetAspectBytes("onos.topo.MastershipState", []byte(`{}`))
@@ -181,7 +181,7 @@ func addMonitorConf() {
 		return
 	}
 
-	log.Infof("Umarshaled into: %v", conf)
+	// log.Infof("Umarshaled into: %v", conf)
 
 	rawConf, err := proto.Marshal(conf)
 	if err != nil {
@@ -195,7 +195,7 @@ func addMonitorConf() {
 
 	data, err := proto.Marshal(&monitor.Adapter{
 		Protocol: "NETCONF",
-		Address:  "192.168.0.1",
+		Address:  "gnmi-netconf-adapter",
 	})
 	if err != nil {
 		log.Errorf("Failed marshaling adapter: %v", err)
