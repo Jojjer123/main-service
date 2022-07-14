@@ -148,10 +148,10 @@ func createDevice(name string, addr string, kind string, model string, modelVers
 		Address: addr,
 		Target:  "192.168.0.1",
 		Version: modelVersion,
-		Timeout: 10,
+		Timeout: uint64(10 * time.Second),
 	}
 
-	// log.Infof("Timeout: %v", uint64(time.Duration.Seconds(10)))
+	log.Infof("Timeout: %v", uint64(10*time.Second))
 	// log.Infof("Duration: %v", time.Duration.Seconds(10))
 	log.Infof("Configurable: %v", configurable)
 
