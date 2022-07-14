@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"strings"
+	"time"
 
 	"main-service/pkg/logger"
 	northboundinterface "main-service/pkg/northbound-interface"
@@ -29,6 +30,7 @@ import (
 var log = logger.GetLogger()
 
 func main() {
+	time.Sleep(1 * time.Minute)
 	// Temporarily add switches to onos-topo
 	addSwitches()
 	// Temporarily add monitor configs & adapter to atomix
@@ -49,7 +51,7 @@ func addSwitches() {
 	}
 
 	/************************ CREATE DEVICE ************************/
-	if err := createDevice("switch-0", "gnmi-netconf-adapter", "netconf-device", "tsn-model", "1.0.2"); err != nil {
+	if err := createDevice("switch-0", "gnmi-netconf-adapter:11161", "netconf-device", "tsn-model", "1.0.2"); err != nil {
 		log.Errorf("Failed creating device: %v", err)
 		return
 	}
