@@ -82,6 +82,14 @@ func getSetRequestForConfig() *pb.SetRequest {
 			{
 				Ext: &gnmi_ext.Extension_RegisteredExt{
 					RegisteredExt: &gnmi_ext.RegisteredExtension{
+						Id:  gnmi_ext.ExtensionID(100),
+						Msg: []byte("my_network_change"),
+					},
+				},
+			},
+			{
+				Ext: &gnmi_ext.Extension_RegisteredExt{
+					RegisteredExt: &gnmi_ext.RegisteredExtension{
 						Id:  gnmi_ext.ExtensionID(101),
 						Msg: []byte("1.0.2"),
 					},
