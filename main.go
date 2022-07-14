@@ -148,11 +148,11 @@ func createDevice(name string, addr string, kind string, model string, modelVers
 		Address: addr,
 		Target:  "192.168.0.1",
 		Version: modelVersion,
-		Timeout: uint64(time.Duration.Seconds(10)),
+		Timeout: 10,
 	}
 
-	log.Infof("Timeout: %v", uint64(time.Duration.Seconds(10)))
-	log.Infof("Duration: %v", time.Duration.Seconds(10))
+	// log.Infof("Timeout: %v", uint64(time.Duration.Seconds(10)))
+	// log.Infof("Duration: %v", time.Duration.Seconds(10))
 	log.Infof("Configurable: %v", configurable)
 
 	m := jsonpb.Marshaler{}
