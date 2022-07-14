@@ -142,7 +142,7 @@ func createDevice(name string, addr string, kind string, model string, modelVers
 		},
 	}
 
-	obj.SetAspectBytes("onos.topo.Configurable", []byte(fmt.Sprintf(`{"address": "%s", "target": "%s", "version": "%s", "type": "%s"}`, addr, "192.168.0.1", modelVersion, model)))
+	obj.SetAspectBytes("onos.topo.Configurable", []byte(fmt.Sprintf(`{"address": "%s", "target": "%s", "version": "%s", "type": "%s", "timeout": %v}`, addr, "192.168.0.1", modelVersion, model, 10*time.Second)))
 	obj.SetAspectBytes("onos.topo.TLSOptions", []byte(`{"insecure": true, "plain": true}`))
 	obj.SetAspectBytes("onos.topo.Asset", []byte(fmt.Sprintf(`{"name": "%v"}`, name)))
 	obj.SetAspectBytes("onos.topo.MastershipState", []byte(`{}`))
