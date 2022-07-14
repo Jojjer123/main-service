@@ -151,13 +151,15 @@ func createDevice(name string, addr string, kind string, model string, modelVers
 		Timeout: uint64(time.Duration.Seconds(10)),
 	}
 
-	configData, err := configurable.Marshal()
+	m := jsonpb.Marshaler{}
+
+	configData, err := m.MarshalToString(&configurable)
 	if err != nil {
 		log.Errorf("Failed marshaling configurable: %v", err)
 		return err
 	}
 
-	obj.SetAspectBytes("onos.topo.Configurable", configData)
+	obj.SetAspectBytes("onos.topo.Configurable", []byte(configData))
 	obj.SetAspectBytes("onos.topo.TLSOptions", []byte(`{"insecure": true, "plain": true}`))
 	obj.SetAspectBytes("onos.topo.Asset", []byte(fmt.Sprintf(`{"name": "%v"}`, name)))
 	obj.SetAspectBytes("onos.topo.MastershipState", []byte(`{}`))
