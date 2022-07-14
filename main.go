@@ -151,6 +151,8 @@ func createDevice(name string, addr string, kind string, model string, modelVers
 		Timeout: uint64(time.Duration.Seconds(10)),
 	}
 
+	log.Infof("Configurable: %v", configurable)
+
 	m := jsonpb.Marshaler{}
 
 	configData, err := m.MarshalToString(&configurable)
@@ -163,8 +165,6 @@ func createDevice(name string, addr string, kind string, model string, modelVers
 	obj.SetAspectBytes("onos.topo.TLSOptions", []byte(`{"insecure": true, "plain": true}`))
 	obj.SetAspectBytes("onos.topo.Asset", []byte(fmt.Sprintf(`{"name": "%v"}`, name)))
 	obj.SetAspectBytes("onos.topo.MastershipState", []byte(`{}`))
-
-	log.Infof("Object to be sent: %v", obj)
 
 	req := &topo.CreateRequest{
 		Object: &obj,
