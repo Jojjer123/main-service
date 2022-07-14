@@ -130,7 +130,7 @@ func createDevice(name string, addr string, kind string, model string, modelVers
 
 	client := topo.CreateTopoClient(conn)
 
-	obj := &topo.Object{
+	obj := topo.Object{
 		UUID:     topo.UUID(uuid.NewString()),
 		ID:       topo.ID(name),
 		Revision: topo.Revision(2),
@@ -164,8 +164,10 @@ func createDevice(name string, addr string, kind string, model string, modelVers
 	obj.SetAspectBytes("onos.topo.Asset", []byte(fmt.Sprintf(`{"name": "%v"}`, name)))
 	obj.SetAspectBytes("onos.topo.MastershipState", []byte(`{}`))
 
+	log.Infof("Object to be sent: %v", obj)
+
 	req := &topo.CreateRequest{
-		Object: obj,
+		Object: &obj,
 	}
 
 	resp, err := client.Create(context.Background(), req)
