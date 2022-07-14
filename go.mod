@@ -43,7 +43,7 @@ require (
 	github.com/atomix/atomix-go-client v0.6.2
 	github.com/ghodss/yaml v1.0.0
 	github.com/google/go-cmp v0.5.8 // indirect
-	github.com/onosproject/onos-api/go v0.8.2
+	github.com/onosproject/onos-api/go v0.8.14
 	github.com/onosproject/onos-lib-go v0.8.16
 	github.com/openconfig/gnmi v0.0.0-20220617175856-41246b1b3507
 	go.uber.org/atomic v1.9.0 // indirect

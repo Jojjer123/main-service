@@ -406,6 +406,8 @@ github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e/go.mod h1:zD1mROLA
 github.com/oklog/ulid v1.3.1/go.mod h1:CirwcVhetQ6Lv90oh/F+FBtV6XMibvdAFo93nm5qn4U=
 github.com/onosproject/onos-api/go v0.8.2 h1:YM3iF5JXUOjbzw5225qLJgmu3GMK4x259zd04pudJS0=
 github.com/onosproject/onos-api/go v0.8.2/go.mod h1:0hdMkFFN2AyKLHMiJVP3ZE61QgSYfNXHiI4BJ/Ry7UI=
+github.com/onosproject/onos-api/go v0.8.14 h1:4ofCvcIKMq8PgCX72f5ui+RDtgkWQe7BgjoVcpo1Pvc=
+github.com/onosproject/onos-api/go v0.8.14/go.mod h1:0hdMkFFN2AyKLHMiJVP3ZE61QgSYfNXHiI4BJ/Ry7UI=
 github.com/onosproject/onos-api/go v0.9.18 h1:bSdqZQ+WC2GKec8HVicPy3UkD2REqTZxQkQt2ccxMdU=
 github.com/onosproject/onos-api/go v0.9.18/go.mod h1:0hdMkFFN2AyKLHMiJVP3ZE61QgSYfNXHiI4BJ/Ry7UI=
 github.com/onosproject/onos-lib-go v0.8.16 h1:AYzCk+YJIAS2pdqWEm6P5XwSGRRbmjA5xbr6gQzAel0=
