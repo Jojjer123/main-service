@@ -142,7 +142,6 @@ func createDevice(name string, addr string, kind string, model string, modelVers
 		},
 	}
 
-	// []byte(fmt.Sprintf(`{"address": "%s", "target": "%s", "version": "%s", "type": "%s", "timeout": %d}`, addr, "192.168.0.1", modelVersion, model, ))
 	var configurable = topo.Configurable{
 		Type:    model,
 		Address: addr,
@@ -150,10 +149,6 @@ func createDevice(name string, addr string, kind string, model string, modelVers
 		Version: modelVersion,
 		Timeout: uint64(10 * time.Second),
 	}
-
-	log.Infof("Timeout: %v", uint64(10*time.Second))
-	// log.Infof("Duration: %v", time.Duration.Seconds(10))
-	log.Infof("Configurable: %v", configurable)
 
 	m := jsonpb.Marshaler{}
 
