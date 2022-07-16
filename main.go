@@ -51,7 +51,7 @@ func addSwitches() {
 	}
 
 	/************************ CREATE DEVICE ************************/
-	if err := createDevice("switch-0", "gnmi-netconf-adapter:11161", "netconf-device", "tsn-model", "1.0.2"); err != nil {
+	if err := createDevice("192.168.0.1", "gnmi-netconf-adapter:11161", "netconf-device", "tsn-model", "1.0.2"); err != nil {
 		log.Errorf("Failed creating device: %v", err)
 		return
 	}
