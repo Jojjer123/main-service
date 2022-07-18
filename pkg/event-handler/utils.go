@@ -60,7 +60,7 @@ func applyConfiguration(id *notification.UUID) error {
 		return err
 	}
 
-	log.Infof("Response from device-monitor is: %v", response)
+	log.Infof("Response from onos-config is: %v", response)
 
 	return nil
 }
@@ -70,11 +70,32 @@ func getSetRequestForConfig() *pb.SetRequest {
 	// TODO: Generate all pb.Update objects for all the values that should be changed... (Let Hamza know
 	// that the current implementation of onos-config only takes in config and not a config ID).
 	confSetRequest := pb.SetRequest{
-		Update: []*pb.Update{ // List of updated values for the configuration
+		Update: []*pb.Update{
 			{
 				Path: &pb.Path{
 					Target: "192.168.0.1",
-					Elem:   []*pb.PathElem{}, // Path to an element that should be updated
+					Elem: []*pb.PathElem{
+						{
+							Name: "interfaces",
+							Key:  map[string]string{"namespace": "urn:ietf:params:xml:ns:yang:ietf-interfaces"},
+						},
+						{
+							Name: "interface",
+							Key:  map[string]string{"name": "sw0p1"},
+						},
+						{
+							Name: "max-sdu-table",
+							Key:  map[string]string{"namespace": "urn:ieee:std:802.1Q:yang:ieee802-dot1q-sched", "traffic-class": "0"},
+						},
+						{
+							Name: "queue-max-sdu",
+						},
+					}, // Path to an element that should be updated
+				},
+				Val: &pb.TypedValue{
+					Value: &pb.TypedValue_StringVal{
+						StringVal: "1503",
+					},
 				},
 			},
 		},
@@ -130,7 +151,7 @@ func connectToGnmiService(addr string) (client.Impl, error) {
 	})
 
 	if err != nil {
-		log.Errorf("Failed creating gNMI client to onos-config: %v", err)
+		log.Errorf("Failed creating gNMI client to %s: %v", addr, err)
 		return nil, err
 	}
 
