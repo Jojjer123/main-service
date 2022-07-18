@@ -73,7 +73,7 @@ func getSetRequestForConfig() *pb.SetRequest {
 		Update: []*pb.Update{ // List of updated values for the configuration
 			{
 				Path: &pb.Path{
-					Target: "switch-0",
+					Target: "192.168.0.1",
 					Elem:   []*pb.PathElem{}, // Path to an element that should be updated
 				},
 			},
