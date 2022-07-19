@@ -93,8 +93,11 @@ func getSetRequestForConfig() *pb.SetRequest {
 					}, // Path to an element that should be updated
 				},
 				Val: &pb.TypedValue{
-					Value: &pb.TypedValue_StringVal{
-						StringVal: "1503",
+					Value: &pb.TypedValue_DecimalVal{
+						DecimalVal: &pb.Decimal64{
+							Digits:    1503,
+							Precision: 6,
+						},
 					},
 				},
 			},
