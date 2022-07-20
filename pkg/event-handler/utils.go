@@ -95,7 +95,37 @@ func getSetRequestForConfig() *pb.SetRequest {
 				Val: &pb.TypedValue{
 					Value: &pb.TypedValue_DecimalVal{
 						DecimalVal: &pb.Decimal64{
-							Digits:    1504,
+							Digits:    1503,
+							Precision: 6,
+						},
+					},
+				},
+			},
+			{
+				Path: &pb.Path{
+					Target: "192.168.0.1",
+					Elem: []*pb.PathElem{
+						{
+							Name: "interfaces",
+							Key:  map[string]string{"namespace": "urn:ietf:params:xml:ns:yang:ietf-interfaces"},
+						},
+						{
+							Name: "interface",
+							Key:  map[string]string{"name": "sw0p2"},
+						},
+						{
+							Name: "max-sdu-table",
+							Key:  map[string]string{"namespace": "urn:ieee:std:802.1Q:yang:ieee802-dot1q-sched", "traffic-class": "0"},
+						},
+						{
+							Name: "queue-max-sdu",
+						},
+					}, // Path to an element that should be updated
+				},
+				Val: &pb.TypedValue{
+					Value: &pb.TypedValue_DecimalVal{
+						DecimalVal: &pb.Decimal64{
+							Digits:    1505,
 							Precision: 6,
 						},
 					},
