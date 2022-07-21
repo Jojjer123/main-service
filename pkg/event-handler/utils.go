@@ -95,7 +95,7 @@ func getSetRequestForConfig() *pb.SetRequest {
 				Val: &pb.TypedValue{
 					Value: &pb.TypedValue_DecimalVal{
 						DecimalVal: &pb.Decimal64{
-							Digits:    1500,
+							Digits:    1504,
 							Precision: 6,
 						},
 					},
