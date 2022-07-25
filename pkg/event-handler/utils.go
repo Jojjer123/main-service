@@ -24,7 +24,7 @@ import (
 func notifyTsnService(reqIds *notification.IdList) (*notification.UUID, error) {
 	// Create gRPC client and connect to TSN service
 	// (consider having a constant connection to TSN service)
-	conn, err := grpc.Dial("tsn-service:5000", grpc.WithInsecure())
+	conn, err := grpc.Dial("tsn-service:5150", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Failed dialing tsn-service: %v", err)
 		return nil, err
