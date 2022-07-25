@@ -50,8 +50,13 @@ func addSwitches() {
 		return
 	}
 
-	/************************ CREATE DEVICE ************************/
+	/*********************** CREATE DEVICES **********************/
 	if err := createDevice("192.168.0.1", "gnmi-netconf-adapter:11161", "netconf-device", "tsn-model", "1.0.2"); err != nil {
+		log.Errorf("Failed creating device: %v", err)
+		return
+	}
+
+	if err := createDevice("192.168.0.2", "gnmi-netconf-adapter:11161", "netconf-device", "tsn-model", "1.0.2"); err != nil {
 		log.Errorf("Failed creating device: %v", err)
 		return
 	}
@@ -145,7 +150,7 @@ func createDevice(name string, addr string, kind string, model string, modelVers
 	var configurable = topo.Configurable{
 		Type:    model,
 		Address: addr,
-		Target:  "192.168.0.1",
+		Target:  addr,
 		Version: modelVersion,
 		Timeout: uint64(10 * time.Second),
 	}
