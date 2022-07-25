@@ -150,7 +150,7 @@ func createDevice(name string, addr string, kind string, model string, modelVers
 	var configurable = topo.Configurable{
 		Type:    model,
 		Address: addr,
-		Target:  addr,
+		Target:  name,
 		Version: modelVersion,
 		Timeout: uint64(10 * time.Second),
 	}
