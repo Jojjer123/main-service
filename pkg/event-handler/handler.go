@@ -1,12 +1,12 @@
 package eventhandler
 
 import (
+	"time"
+
 	"main-service/pkg/logger"
 	// store "main-service/pkg/store-wrapper"
 	"main-service/pkg/structures/configuration"
 	"main-service/pkg/structures/notification"
-
-	"time"
 )
 
 var log = logger.GetLogger()

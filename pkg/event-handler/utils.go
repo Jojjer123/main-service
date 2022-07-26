@@ -44,8 +44,6 @@ func notifyTsnService(reqIds *notification.IdList) (*notification.UUID, error) {
 }
 
 func applyConfiguration(id *notification.UUID) error {
-
-	/************************ APPLY CONFIG ************************/
 	client, err := connectToGnmiService("onos-config:5150")
 	if err != nil {
 		log.Errorf("Failed connecting to gNMI service: %v", err)
