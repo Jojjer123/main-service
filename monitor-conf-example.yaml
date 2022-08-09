@@ -4,7 +4,7 @@ devices_with_monitoring:
     protocol: NETCONF
     configs:
       - config:
-          - interval: 10000
+          - interval: 60000
             counters:
               - name: sw0p1-eth-interface-in-total-frames # name/id
                 path: "elem: <name: 'interfaces' key: <key: 'namespace' value: 'urn:ietf:params:xml:ns:yang:ietf-interfaces'>> 

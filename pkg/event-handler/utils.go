@@ -64,6 +64,7 @@ func applyConfiguration(id *notification.UUID) error {
 }
 
 // Creates a set request for applying a new configuration.
+// TODO: Make automatic, it currently builds a set request statically from predefined values.
 func getSetRequestForConfig() *pb.SetRequest {
 	// TODO: Generate all pb.Update objects for all the values that should be changed... (Let Hamza know
 	// that the current implementation of onos-config only takes in config and not a config ID).

@@ -33,6 +33,10 @@ func main() {
 	time.Sleep(1 * time.Minute)
 	// Temporarily add switches to onos-topo
 	addSwitches()
+
+	// Temporarily add links to onos-topo
+	addLinks()
+
 	// Temporarily add monitor configs & adapter to atomix
 	addMonitorConf()
 
@@ -58,6 +62,20 @@ func addSwitches() {
 
 	if err := createDevice("192.168.0.2", "gnmi-netconf-adapter:11161", "netconf-device", "tsn-model", "1.0.2"); err != nil {
 		log.Errorf("Failed creating device: %v", err)
+		return
+	}
+}
+
+func addLinks() {
+	/************************ CREATE KIND ************************/
+	if err := createKind("link"); err != nil {
+		log.Errorf("Failed creating kind: %v", err)
+		return
+	}
+
+	/************************ CREATE LINKS ***********************/
+	if err := createLink("link0", "link", "192.168.0.1", "sw0p1", "192.168.0.2", "sw0p2"); err != nil {
+		log.Errorf("Failed creating link: %v", err)
 		return
 	}
 }
@@ -179,6 +197,72 @@ func createDevice(name string, addr string, kind string, model string, modelVers
 	}
 
 	log.Infof("Created device %v", resp)
+
+	return nil
+}
+
+// Creates a link with port data as adHoc aspect, not sure if that is the intended way to do it or not
+func createLink(name string, kind string, srcIp string, srcPort string, targetIp string, targetPort string) error {
+	// Create connection to onos-topo
+	conn, err := connectToGrpcService("onos-topo:5150")
+	if err != nil {
+		log.Errorf("Failed connecting to service: %v", err)
+		return err
+	}
+
+	defer conn.Close()
+
+	// Create topo client from connection to onos-topo
+	client := topo.CreateTopoClient(conn)
+
+	// Create generic relation object
+	obj := topo.Object{
+		UUID:     topo.UUID(uuid.NewString()),
+		ID:       topo.ID(name),
+		Revision: topo.Revision(2),
+		Type:     topo.Object_RELATION,
+		Obj: &topo.Object_Relation{
+			Relation: &topo.Relation{
+				KindID:      topo.ID(kind),
+				SrcEntityID: topo.ID(srcIp),
+				TgtEntityID: topo.ID(targetIp),
+			},
+		},
+	}
+
+	// Not sure if this is the intended way to create a link containing port data or not
+	// Create ad hoc data (link specific data specifying the ports used)
+	portData := topo.AdHoc{
+		Properties: map[string]string{
+			"srcPort": srcPort,
+			"dstPort": targetPort,
+		},
+	}
+
+	m := jsonpb.Marshaler{}
+
+	// Marshal port data to string
+	rawPortData, err := m.MarshalToString(&portData)
+	if err != nil {
+		log.Errorf("Failed marshaling configurable: %v", err)
+		return err
+	}
+
+	// Add port data as ad hoc aspect of the relation
+	obj.SetAspectBytes("onos.topo.AdHoc", []byte(rawPortData))
+
+	req := &topo.CreateRequest{
+		Object: &obj,
+	}
+
+	// Create relation in onos-topo
+	resp, err := client.Create(context.Background(), req)
+	if err != nil {
+		log.Errorf("Failed creating link: %v", err)
+		return err
+	}
+
+	log.Infof("Created link %v", resp)
 
 	return nil
 }
