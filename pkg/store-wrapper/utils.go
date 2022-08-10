@@ -18,6 +18,7 @@ import (
 
 	// "github.com/onosproject/onos-lib-go/pkg/certs"
 	// _map "github.com/atomix/atomix-go-client/pkg/atomix/map"
+
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/protobuf/proto"
@@ -94,6 +95,39 @@ func getFromStore(urn string) (*configuration.ConfigResponse, error) {
 	}
 
 	return &req, nil
+}
+
+func getNetworkChangeFromStore(urn string) ([]byte, error) {
+	ctx := context.Background()
+
+	// Create a slice of maximum two URN elements
+	urnElems := strings.SplitN(urn, ".", 2)
+
+	// Get the store
+	store, err := atomix.GetMap(ctx, urnElems[0])
+	if err != nil {
+		log.Errorf("Failed getting store \"%s\": %v", urnElems[0], err)
+		return nil, err
+	}
+
+	// TODO: Check if the URN contains more complex path and do something special then???
+
+	// Get the object from store
+	obj, err := store.Get(ctx, urnElems[1])
+	if err != nil {
+		log.Errorf("Failed getting resource \"%s\": %v", urnElems[1], err)
+		return nil, err
+	}
+
+	// // Unmarshal the byte slice from the store into gNMI set request
+	// var req = &pb.SetRequest{}
+	// err = proto.Unmarshal(obj.Value, req)
+	// if err != nil {
+	// 	log.Errorf("Failed to unmarshal request data from store: %v", err)
+	// 	return nil, err
+	// }
+
+	return obj.Value, nil
 }
 
 // ONLY FOR TESTING

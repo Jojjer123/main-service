@@ -3,14 +3,13 @@ package eventhandler
 import (
 	"context"
 	"crypto/tls"
+	"fmt"
 	"strings"
 
-	// "crypto/tls"
+	store "main-service/pkg/store-wrapper"
 	"main-service/pkg/structures/notification"
 	"time"
 
-	// "github.com/onosproject/onos-lib-go/pkg/certs"
-	// "github.com/onosproject/onos-api/go/onos/topo"
 	"github.com/onosproject/onos-lib-go/pkg/certs"
 	"github.com/openconfig/gnmi/client"
 	gclient "github.com/openconfig/gnmi/client/gnmi"
@@ -50,7 +49,12 @@ func applyConfiguration(id *notification.UUID) error {
 		return err
 	}
 
-	confReq := getSetRequestForConfig()
+	// confReq := getSetRequestForConfig()
+	confReq, err := store.GetConfigurationRequest(fmt.Sprintf("%v", id))
+	if err != nil {
+		log.Errorf("Failed getting configuration request from store: %v", err)
+		return err
+	}
 
 	response, err := client.(*gclient.Client).Set(context.Background(), confReq)
 	if err != nil {

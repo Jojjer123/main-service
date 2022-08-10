@@ -11,6 +11,8 @@ import (
 	"github.com/atomix/atomix-go-client/pkg/atomix"
 	"github.com/google/uuid"
 	"google.golang.org/protobuf/proto"
+
+	pb "github.com/openconfig/gnmi/proto/gnmi"
 )
 
 var stores = []string{
@@ -126,6 +128,26 @@ func GetTopology() (struct{}, error) {
 	getTopoFromStore()
 
 	return struct{}{}, nil
+}
+
+func GetConfigurationRequest(configId string) (*pb.SetRequest, error) {
+	// Build the URN for the request data
+	urn := "configurations.tsn-configuration." + configId
+
+	// Send request to specific path in k/v store "configurations"
+	rawData, err := getNetworkChangeFromStore(urn)
+	if err != nil {
+		log.Errorf("Failed getting request data from store: %v", err)
+		return nil, err
+	}
+
+	var confReq = &pb.SetRequest{}
+	if err = proto.Unmarshal(rawData, confReq); err != nil {
+		log.Errorf("Failed unmarshaling schedule: %v", err)
+		return nil, err
+	}
+
+	return confReq, nil
 }
 
 //////////////////////////////////////////////////
