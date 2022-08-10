@@ -3,7 +3,6 @@ package eventhandler
 import (
 	"context"
 	"crypto/tls"
-	"fmt"
 	"strings"
 
 	store "main-service/pkg/store-wrapper"
@@ -50,11 +49,13 @@ func applyConfiguration(id *notification.UUID) error {
 	}
 
 	// confReq := getSetRequestForConfig()
-	confReq, err := store.GetConfigurationRequest(fmt.Sprintf("%v", id))
+	confReq, err := store.GetConfigurationRequest(id.Value)
 	if err != nil {
 		log.Errorf("Failed getting configuration request from store: %v", err)
 		return err
 	}
+
+	log.Infof("Sending network change request looking like: %v", confReq)
 
 	response, err := client.(*gclient.Client).Set(context.Background(), confReq)
 	if err != nil {
